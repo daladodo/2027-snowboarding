@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2027 妙高全單板自駕滑雪團｜11人互動行程表 (1/14–1/23)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+    .hero-bg {
+      background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.25), transparent 45%),
+                  linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #0c4a6e 100%);
+    }
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .tab-btn-active {
+      background-color: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .role-btn-active {
+      background-color: #0f172a;
+      color: #ffffff;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 9999px;
+    }
+    @media print {
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Toast Notification -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 pointer-events-none flex flex-col gap-2 max-w-sm w-full px-4"></div>
+
+  <!-- Member Edit Modal -->
+  <div id="memberModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-200 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">編輯 11 位團員暱稱</h3>
+          <p class="text-xs text-slate-500 mt-0.5">修改後會自動同步至「分車配置」、「教練分班」與「包棟分房表」</p>
+        </div>
+        <button id="closeMemberModalBtn" type="button" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">✕</button>
+      </div>
+      <div id="memberEditInputs" class="py-4 overflow-y-auto custom-scrollbar space-y-3 flex-1"></div>
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+        <button id="resetMembersBtn" type="button" class="px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition">恢復預設名稱</button>
+        <div class="flex gap-2">
+          <button id="cancelMemberModalBtn" type="button" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">取消</button>
+          <button id="saveMembersBtn" type="button" class="px-4 py-2 text-xs font-semibold text-white bg-sky-600 hover:bg-sky-700 rounded-lg shadow-sm transition">儲存並同步</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Header -->
+  <header class="hero-bg text-white relative overflow-hidden">
+    <!-- Decorative Alpine SVG -->
+    <svg class="absolute bottom-0 left-0 w-full h-24 opacity-15 pointer-events-none" viewBox="0 0 1440 160" preserveAspectRatio="none">
+      <polygon fill="#ffffff" points="0,160 180,50 340,130 560,20 780,120 1020,10 1240,110 1440,40 1440,160"></polygon>
+      <polygon fill="#38bdf8" points="0,160 260,90 460,145 700,60 940,140 1180,55 1440,160"></polygon>
+    </svg>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-8 relative z-10">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="glass-pill px-3 py-1 rounded-full text-xs font-semibold tracking-wide text-sky-200">🏂 2027 MYOKO SNOWBOARD TRIP</span>
+          <span class="glass-pill px-3 py-1 rounded-full text-xs font-medium text-slate-200">📅 2027/01/14 (四) – 01/23 (六) ・10天9夜</span>
+          <span class="glass-pill px-3 py-1 rounded-full text-xs font-medium text-emerald-300">✅ 方案 A：妙高四霸王定案版</span>
+        </div>
+        <div class="flex items-center gap-2 no-print">
+          <button id="openMemberModalBtn" type="button" class="glass-pill hover:bg-white/20 px-3 py-1.5 rounded-lg text-xs font-semibold text-white flex items-center gap-1.5 transition">
+            <span>✏️ 編輯 11 人名單</span>
+          </button>
+          <button id="copyShareAnnouncementBtn" type="button" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+            <span>📋 複製群組公告</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-7">
+          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+            2027 新潟妙高・全單板自駕滑雪團
+          </h1>
+          <p class="text-slate-300 text-sm sm:text-base mt-2 max-w-2xl leading-relaxed">
+            專為 <strong class="text-white">11 位單板雪友（6 位先鋒老手＋5 位初學新手）</strong> 打造的雙軌互動行程表。結合飯山站雙四驅車自駕、赤倉與池之平中文教練小班教學，以及 5 晚包棟木屋火鍋派對！
+          </p>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="lg:col-span-5 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2.5">
+          <div class="glass-pill rounded-xl p-3">
+            <div class="text-xs text-sky-200 font-medium">團員編制（全單板）</div>
+            <div class="text-lg font-extrabold mt-0.5">11 人 <span class="text-xs font-normal text-slate-300">(6老手+5新手)</span></div>
+          </div>
+          <div class="glass-pill rounded-xl p-3">
+            <div class="text-xs text-sky-200 font-medium">預計滑雪天數</div>
+            <div class="text-lg font-extrabold mt-0.5">老手 7 天 / 新手 5 天</div>
+          </div>
+          <div class="glass-pill rounded-xl p-3">
+            <div class="text-xs text-sky-200 font-medium">自駕車隊＆取還車</div>
+            <div class="text-lg font-extrabold mt-0.5">2 台 4WD <span class="text-xs font-normal text-slate-300">(飯山站)</span></div>
+          </div>
+          <div class="glass-pill rounded-xl p-3">
+            <div class="text-xs text-sky-200 font-medium">妙高核心住宿</div>
+            <div class="text-lg font-extrabold mt-0.5">Do公寓 + Sierra包棟</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Navigation Bar -->
+  <nav class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-2.5" id="mainTabNav">
+        <button type="button" data-tab="itinerary" class="main-tab-btn tab-btn-active whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+          <span>📅 10日雙軌行程</span>
+        </button>
+        <button type="button" data-tab="resorts" class="main-tab-btn text-slate-600 hover:bg-slate-100 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+          <span>🏂 方案A四雪場攻略</span>
+        </button>
+        <button type="button" data-tab="transport" class="main-tab-btn text-slate-600 hover:bg-slate-100 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+          <span>🚐 交通＆11人分車教練</span>
+        </button>
+        <button type="button" data-tab="lodging" class="main-tab-btn text-slate-600 hover:bg-slate-100 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+          <span>🏡 住宿＆包棟分房</span>
+        </button>
+        <button type="button" data-tab="dining" class="main-tab-btn text-slate-600 hover:bg-slate-100 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+          <span>🍲 美食採買＆景點溫泉</span>
+        </button>
+        <button type="button" data-tab="checklist" class="main-tab-btn text-slate-600 hover:bg-slate-100 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+          <span>🎒 裝備檢查＆分帳試算</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+    <!-- ==================== TAB 1: 10日雙軌行程 ==================== -->
+    <section id="tab-itinerary" class="tab-panel space-y-5">
+      <!-- Filter Controls -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="space-y-1.5">
+          <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">1. 切換你的團員身分視角（高光顯示專屬動線）</div>
+          <div class="flex flex-wrap gap-1.5" id="roleFilterGroup">
+            <button type="button" data-role="all" class="role-filter-btn role-btn-active px-3 py-1.5 rounded-lg text-xs font-bold transition">👥 全員雙軌總覽 (11人)</button>
+            <button type="button" data-role="pro" class="role-filter-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">🔥 先鋒會滑組 (6人・滑7天)</button>
+            <button type="button" data-role="beg" class="role-filter-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">🌱 單板新手組 (5人・Day 4會合)</button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">2. 篩選行程階段</div>
+          <div class="flex flex-wrap items-center gap-1.5" id="phaseFilterGroup">
+            <button type="button" data-phase="all" class="phase-filter-btn bg-sky-100 text-sky-800 border border-sky-300 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">全部 (D1–D10)</button>
+            <button type="button" data-phase="warmup" class="phase-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">先鋒暖身 (D2–D3)</button>
+            <button type="button" data-phase="lesson" class="phase-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">新手教練課 (D4–D5)</button>
+            <button type="button" data-phase="together" class="phase-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">11人合滑 (D6–D8)</button>
+            <button type="button" data-phase="transit" class="phase-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">東京移動 (D1/D9/D10)</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 self-start lg:self-end">
+          <button id="expandAllDaysBtn" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">展開全部細項</button>
+          <button id="collapseAllDaysBtn" type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">收合全部</button>
+        </div>
+      </div>
+
+      <!-- Visual Timeline Summary Bar -->
+      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-sky-950 text-white rounded-2xl p-4 shadow-sm">
+        <div class="text-xs font-bold text-sky-300 mb-2 flex items-center justify-between">
+          <span>🗺️ 10 天住宿與雪場進度軸（點擊任一天數可直接跳轉）</span>
+          <span id="completedDaysCounter" class="text-emerald-300 font-semibold">已確認 0 / 10 天</span>
+        </div>
+        <div class="grid grid-cols-5 sm:grid-cols-10 gap-1.5" id="quickJumpBar"></div>
+      </div>
+
+      <!-- Day Cards Container -->
+      <div id="itineraryCardsContainer" class="space-y-4"></div>
+    </section>
+
+    <!-- ==================== TAB 2: 方案A四雪場攻略 ==================== -->
+    <section id="tab-resorts" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-800 mb-1">團員票選勝出：方案 A（妙高四霸王）</span>
+            <h2 class="text-xl font-extrabold text-slate-900">妙高周邊雪場・11 人全單板（Snowboard）實戰攻略</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">點擊下方雪場切換查看「6 位單板老手路線」、「5 位單板新手練功區」、「防卡板平路提醒」與「11 人中午集合點」。</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5" id="resortSelectorButtons"></div>
+        </div>
+
+        <!-- Selected Resort Detail View -->
+        <div id="resortDetailContainer" class="pt-5"></div>
+      </div>
+
+      <!-- Plan A vs B vs C Comparison Table -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">📊 為什麼我們選「方案 A」？（三種方案快速對照備查）</h3>
+            <p class="text-xs text-slate-500">若遇特定雪場大風停開纜車，可隨時切換至方案 B（斑尾高原）或方案 C（樂天新井）作為備案</p>
+          </div>
+          <div class="flex gap-1.5" id="planHighlightBtns">
+            <button type="button" data-plan="A" class="plan-hl-btn bg-sky-600 text-white px-3 py-1 rounded-lg text-xs font-bold">高光方案 A (主選)</button>
+            <button type="button" data-plan="B" class="plan-hl-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 rounded-lg text-xs font-bold">比較方案 B (斑尾)</button>
+            <button type="button" data-plan="C" class="plan-hl-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 rounded-lg text-xs font-bold">比較方案 C (新井)</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                <th class="p-3 font-bold">方案名稱</th>
+                <th class="p-3 font-bold">Day 2–3（6位老手先鋒）</th>
+                <th class="p-3 font-bold">Day 4–5（5位新手教練課＋老手分流）</th>
+                <th class="p-3 font-bold">Day 6–8（11人合體同樂）</th>
+                <th class="p-3 font-bold">單板團隊優勢評比</th>
+              </tr>
+            </thead>
+            <tbody id="planComparisonTableBody" class="divide-y divide-slate-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Ski Schools & Rental Reference -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800">全中文私人小班首選</span>
+              <span class="text-xs text-slate-400">建議提早 3 個月訂</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-base">潛雪 SnowDiving 妙高中文教練</h4>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">獲神秘客認證的台灣團隊，駐點赤倉溫泉、赤倉觀光、池之平與杉之原。5 位單板新手建議拆「1 對 2 ＋ 1 對 3」請兩位單板教練，學習效率最高。</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-700">約 NT$3,000–13,500 / 人</span>
+            <a href="https://snowdiving-winter.com/service/class/" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-600 hover:text-sky-800">前往官網預約 ↗</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-sky-100 text-sky-800">平台中文／外語私人課</span>
+              <span class="text-xs text-slate-400">6 小時全日課</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-base">KKday ＆ 雪板地圖中文教練</h4>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">可指定於赤倉溫泉、池之平或杉之原開課。全日 6 小時（含 1 小時午休），線上直接刷卡鎖定檔期，適合兩組新手同步開課。</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+            <a href="https://www.kkday.com/zh-tw/product/635972" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-600 hover:text-sky-800">KKday 預約頁 ↗</a>
+            <a href="https://snowboardmap.com/product/%E5%85%A8%E6%97%A5%E8%AA%B2%E7%A8%8B-%E5%85%AD%E5%B0%8F%E6%99%82-%E5%A6%99%E9%AB%98%E6%BB%91%E9%9B%AA%E6%95%99%E7%B7%B4-%E9%81%94%E6%B5%AA/" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-600 hover:text-sky-800">雪板地圖預約頁 ↗</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-100 text-amber-800">5位新手租借雪具大本營</span>
+              <span class="text-xs text-slate-400">赤倉 Champion 1 號纜車旁</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-base">Myoko Snowsports 赤倉店</h4>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">位於赤倉溫泉與赤倉觀光交界，裝備保養極佳、英文溝通無礙。5 位新手 Day 4 早上在此一次租齊 5 天份單板、雪鞋與安全帽，Day 8 下午直接歸還。</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-700">支援連租 5 日方案</span>
+            <a href="https://myokosnowsports.com/akakura/" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-600 hover:text-sky-800">查看租借與學校 ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: 交通＆11人分車教練 ==================== -->
+    <section id="tab-transport" class="tab-panel hidden space-y-6">
+      <!-- Shinkansen & Route Comparison -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-900 text-white">🔥 先鋒會滑組 (6人) ・Day 2 (1/15) 交通動線</span>
+            <a href="https://www.navitime.co.jp/diagram/depArrTimeList?departure=00004067&arrival=00004067&line=00000177" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-600 hover:underline">時刻表查詢 ↗</a>
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-2">JR 上野站 ➔ 飯山站（北陸新幹線）➔ 站前取 2 台 4WD 車</h3>
+          <div class="space-y-2.5 text-xs sm:text-sm">
+            <div class="p-3 rounded-xl bg-sky-50 border border-sky-200">
+              <div class="flex items-center justify-between font-bold text-sky-950">
+                <span>🎯 主推班次：北陸新幹線 はくたか 553 號</span>
+                <span class="text-sky-700">車程 1 小時 45 分</span>
+              </div>
+              <p class="text-slate-700 mt-1"><strong>07:58 JR 上野站發車 ➔ 09:43 抵達飯山站</strong>。配合站前租車行 09:00 營業，出站即取車不吹冷風，10:15 出發、11:00 即抵赤倉觀光開滑（<a href="https://timetables.jreast.co.jp/2610/train/035/038611.html" target="_blank" rel="noopener noreferrer" class="text-sky-600 underline font-semibold">JR 東日本時刻表</a>）。</p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="flex items-center justify-between font-bold text-slate-800">
+                <span>⚡ 超早鳥備案：北陸新幹線 はくたか 551 號</span>
+                <span class="text-slate-500">車程 1 小時 42 分</span>
+              </div>
+              <p class="text-slate-600 mt-1"><strong>06:34 JR 上野站發車 ➔ 08:16 抵達飯山站</strong>。注意：站前人工櫃檯多於 08:30–09:00 開門，若搭此班次需預約自助取車（<a href="https://timetable.jr-odekake.net/train-timetable/117661?date=20251226" target="_blank" rel="noopener noreferrer" class="text-sky-600 underline">班次詳情</a>）。</p>
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-950">
+              <div class="font-bold">🚗 飯山站前租車行（千曲川口出站右轉步行 1 分鐘）</div>
+              <p class="mt-1">推薦於 <a href="https://tc.tabirai.net/car/nagano/iiyama_st/" target="_blank" rel="noopener noreferrer" class="underline font-bold">日產租車 飯山站前店 (Tabirai 比價)</a> 或共構的 <a href="https://www.ekiren.co.jp/office/shinkansen?sinkansen_cd=05" target="_blank" rel="noopener noreferrer" class="underline font-bold">JR 駅レンタカー 飯山営業所</a> 預訂 <strong>2 台 4WD 八人座廂型車＋雪胎＋車頂雪板架</strong>。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-700 text-white">🌱 單板新手組 (5人) ・Day 4 (1/17) 會合動線</span>
+            <a href="https://japantravel.navitime.com/zh-tw/booking/jr/search/?departure=00004067&arrival=00007617" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-600 hover:underline">NAVITIME 線上訂票 ↗</a>
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-2">東京／上野 ➔ 長野站 ➔ 妙高高原站（先鋒車隊 5 分鐘接站）</h3>
+          <div class="space-y-2.5 text-xs sm:text-sm">
+            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+              <div class="font-bold text-emerald-950">🚆 路線 A（最準時推薦）：新幹線＋信濃鐵道北信濃線</div>
+              <ol class="list-decimal list-inside text-slate-700 mt-1 space-y-1">
+                <li>從東京站／上野站搭乘 <strong>北陸新幹線（かがやき / はくたか）</strong> 至 <strong>長野站</strong>（約 80–90 分鐘）。</li>
+                <li>於長野站同站轉乘 <strong>信濃鐵道北信濃線</strong> 直達 <strong>妙高高原站</strong>（約 50 分鐘，單程 ¥850）。</li>
+                <li><strong>先鋒組開 2 台車從住宿到「妙高高原站」只需 3–5 分鐘</strong>，出站直接上車去租雪具！</li>
+              </ol>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-800">🚌 路線 B（免換車直達）：成田／羽田機場直達接駁巴士</div>
+              <p class="text-slate-600 mt-1">若新手團員不想拖行李轉乘鐵路，可提前 10 天預約冬季限定 <strong>MYOKO SHUTTLE</strong> 直達赤倉溫泉（單程 ¥11,000 起，詳見 <a href="https://snowdiving-winter.com/%E5%A6%99%E9%AB%98%E6%BB%91%E9%9B%AA%E6%94%BB%E7%95%A5/" target="_blank" rel="noopener noreferrer" class="text-sky-600 underline">潛雪交通懶人包</a>）。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive 11-Person Car & Coach Assigner -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+          <div>
+            <h3 class="text-lg font-extrabold text-slate-900">🚐 11 人雙四驅車座位 ＆ 單板新手教練分班互動分配器</h3>
+            <p class="text-xs text-slate-500 mt-0.5">點擊團員名牌即可在「1 號車 / 2 號車」或「教練 A 班 (2人) / B 班 (3人)」之間切換，自動儲存於瀏覽器！</p>
+          </div>
+          <button id="copyCarCoachBtn" type="button" class="self-start sm:self-auto px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition">
+            📋 複製分車＆分班名單
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 pt-5">
+          <!-- Car 1 -->
+          <div class="rounded-2xl border-2 border-sky-200 bg-sky-50/50 p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-extrabold text-sky-950 text-sm">🚙 1 號車：Alpha 號 (4WD 8人座)</span>
+                <span id="car1CountBadge" class="px-2 py-0.5 rounded-full text-xs font-bold bg-sky-200 text-sky-900">6 / 8 座</span>
+              </div>
+              <p class="text-xs text-slate-600 mb-3">Day 2–3 載 3 位老手＋3 板袋；Day 4–8 裝車頂架載 6 人往返雪場（車程 5 分鐘）。點擊團員可移至 2 號車：</p>
+              <div id="car1MembersList" class="flex flex-wrap gap-2"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-sky-200/60 text-xs text-sky-900 flex items-center justify-between">
+              <span>🎿 車頂雪板架負載：最多 6 塊單板</span>
+              <span class="font-semibold">配備：4WD + 雪胎</span>
+            </div>
+          </div>
+
+          <!-- Car 2 -->
+          <div class="rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-extrabold text-indigo-950 text-sm">🚐 2 號車：Bravo 號 (4WD 8人座)</span>
+                <span id="car2CountBadge" class="px-2 py-0.5 rounded-full text-xs font-bold bg-indigo-200 text-indigo-900">5 / 8 座</span>
+              </div>
+              <p class="text-xs text-slate-600 mb-3">Day 2–3 載 3 位老手＋3 板袋；Day 4–8 裝車頂架載 5 人往返雪場。點擊團員可移至 1 號車：</p>
+              <div id="car2MembersList" class="flex flex-wrap gap-2"></div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-indigo-200/60 text-xs text-indigo-900 flex items-center justify-between">
+              <span>🎿 車頂雪板架負載：最多 5 塊單板</span>
+              <span class="font-semibold">配備：4WD + 雪胎</span>
+            </div>
+          </div>
+
+          <!-- Beginner Snowboard Coach Split -->
+          <div class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/50 p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-extrabold text-emerald-950 text-sm">🏂 Day 4–5 單板新手教練分班</span>
+                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-200 text-emerald-900">拆 2 小班最推</span>
+              </div>
+              <p class="text-xs text-slate-600 mb-3">單板首日需教練扶手練落葉飄，5 位新手拆成「A 班 + B 班」練習量翻倍（點擊新手可切換班別）：</p>
+              <div class="space-y-2.5">
+                <div class="bg-white/80 rounded-xl p-2.5 border border-emerald-200">
+                  <div class="text-xs font-bold text-emerald-900 mb-1.5 flex justify-between">
+                    <span>🟢 單板教練 A 班（建議 2 人）</span>
+                    <span id="coachACount">2 人</span>
+                  </div>
+                  <div id="coachAMembersList" class="flex flex-wrap gap-1.5"></div>
+                </div>
+                <div class="bg-white/80 rounded-xl p-2.5 border border-emerald-200">
+                  <div class="text-xs font-bold text-emerald-900 mb-1.5 flex justify-between">
+                    <span>🔵 單板教練 B 班（建議 3 人）</span>
+                    <span id="coachBCount">3 人</span>
+                  </div>
+                  <div id="coachBMembersList" class="flex flex-wrap gap-1.5"></div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-emerald-200/60 text-xs text-emerald-900">
+              💡 Day 5 可依第 1 天學習進度動態互換班級成員！
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: 住宿＆包棟分房 ==================== -->
+    <section id="tab-lodging" class="tab-panel hidden space-y-6">
+      <!-- 4 Accommodation Stages -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-200 text-slate-800">Day 1 (1/14) ＆ Day 9 (1/22)</span>
+              <span class="text-xs font-semibold text-slate-500">東京上野／東京站周邊</span>
+            </div>
+            <h3 class="text-lg font-extrabold text-slate-900">東京上野站前住宿（先鋒 6 人 / 回程 11 人）</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              京成 Skyliner 41 分鐘直達成田機場，步行 3 分鐘即達 JR 上野站新幹線剪票口。Day 1 先鋒 6 人入住方便隔天一早搭 07:58 新幹線；Day 9 全員 11 人回東京慶功採買。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <a href="https://www.apahotel.com/hotel/syutoken/tokyo/keiseiueno-ekimae/" target="_blank" rel="noopener noreferrer" class="font-bold text-sky-600 hover:underline">APA飯店〈京成上野站前〉官網 ↗</a>
+            <a href="https://www.apahotel.com/hotel/syutoken/tokyo/uenoekimae/" target="_blank" rel="noopener noreferrer" class="font-bold text-sky-600 hover:underline">APA飯店〈上野站前〉官網 ↗</a>
+            <a href="https://bobbytravel.tw/ueno-hotels/" target="_blank" rel="noopener noreferrer" class="font-bold text-slate-600 hover:underline">上野 12 間飯店攻略 ↗</a>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-sky-100 text-sky-800">Day 2–3 (1/15–1/16・共 2 晚)</span>
+              <span class="text-xs font-semibold text-slate-500">先鋒會滑組 6 人入住</span>
+            </div>
+            <h3 class="text-lg font-extrabold text-slate-900">Do膳食公寓飯店（Pension Do / ペンション Do）</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              位於新潟縣妙高市田口 1556-87（距妙高高原站 4 km、赤倉觀光 2.2 km、赤倉溫泉 2.5 km）。由熱情老夫婦經營，提供「3–6 人山景複式公寓」與「2–3 人山景日式房」。入住 14:00 後、退房 12:00 前（不含早餐）。
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="text-slate-500">📍 與 Day 4 包棟木屋同在「田口區」，換宿車程僅 3 分鐘</span>
+            <a href="https://tw.trip.com/hotels/myoko-hotel-detail-17452521/pension-do/" target="_blank" rel="noopener noreferrer" class="font-bold text-sky-600 hover:underline">查看 Trip.com 房型與評論 ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sierra Lodge Myoko Highlight + Interactive Room Assigner -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-sky-500/30">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-100 text-amber-900">Day 4–8 (1/17–1/21・共 5 晚包棟)</span>
+              <span class="text-xs font-semibold text-slate-500">📍 〒949-2106 新潟県妙高市田口 1250-1</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-900">Sierra Lodge Myōkō（11 人包棟美式木屋大本營）</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              距離妙高高原 IC 交流道僅 2 分鐘（免開陡峭山路）、步行 2 分鐘即達 24 小時 7-Eleven、開車 3 分鐘到妙高高原站、5 分鐘到赤倉與池之平雪場！備有完整中島廚房、高級按摩椅、Xbox、Netflix 與雪具乾燥區。<strong class="text-rose-600">重要提醒：本館標準上限 10 人，隔壁姊妹棟 Premium Residence 可住 12 人，11 位團員請提前去信屋主 Donald（info@sierralodgemyoko.com）確認加床或棟別配置！</strong>
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0">
+            <a href="https://www.sierralodgemyoko.com/chalet" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white hover:bg-sky-700 transition">Sierra Lodge 官網介紹 ↗</a>
+            <a href="https://www.sierralodgemyoko.com/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-800 hover:bg-slate-200 transition">雙棟 10/12 人詳情 ↗</a>
+            <button id="copyRoomingBtn" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition">📋 複製分房表</button>
+          </div>
+        </div>
+
+        <!-- Interactive Room Assignment Board -->
+        <div class="pt-4">
+          <div class="text-xs font-bold text-slate-500 mb-3">🛏️ 11 人包棟木屋互動分房表（點擊團員名牌即可輪換房間 A / B / C / D）：</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5" id="roomAssignContainer"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: 美食採買＆景點溫泉 ==================== -->
+    <section id="tab-dining" class="tab-panel hidden space-y-5">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex flex-wrap gap-1.5" id="poiCategoryBtns">
+          <button type="button" data-cat="all" class="poi-cat-btn bg-sky-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">全部推薦 (13)</button>
+          <button type="button" data-cat="food" class="poi-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">🥩 餐廳與居酒屋</button>
+          <button type="button" data-cat="market" class="poi-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">🛒 包棟超市採買</button>
+          <button type="button" data-cat="onsen" class="poi-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">♨️ 溫泉與下午茶</button>
+          <button type="button" data-cat="tour" class="poi-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">🐒 休腿日觀光景點</button>
+        </div>
+
+        <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer select-none bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg">
+          <input type="checkbox" id="groupFriendlyToggle" class="rounded text-sky-600 focus:ring-sky-500" />
+          <span>👥 只顯示適合 11 人大團聚餐／同遊地點</span>
+        </label>
+      </div>
+
+      <div id="poiCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ==================== TAB 6: 裝備檢查＆分帳試算 ==================== -->
+    <section id="tab-checklist" class="tab-panel hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Snowboard Gear Checklist -->
+        <div class="lg:col-span-6 bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-extrabold text-slate-900">🎒 單板（Snowboard）個人裝備檢查表</h3>
+              <button id="resetChecklistBtn" type="button" class="text-xs text-slate-400 hover:text-slate-700">全部重置</button>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">勾選進度會自動保存在你的手機／電腦中。標註「🌱 新手必備」為第 4–5 天上單板課的保命護具！</p>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4">
+              <div id="gearProgressBar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <div class="text-xs font-bold text-slate-600 mb-3 flex justify-between">
+              <span id="gearProgressText">已完成 0 / 12 項</span>
+              <span class="text-sky-600">自駕提醒：國際駕照＋台灣駕照正本必帶！</span>
+            </div>
+
+            <div id="gearChecklistContainer" class="space-y-2 max-h-[420px] overflow-y-auto custom-scrollbar pr-1"></div>
+          </div>
+        </div>
+
+        <!-- 11-Person Dual-Track Budget Calculator -->
+        <div class="lg:col-span-6 bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-extrabold text-slate-900">💰 11 人雙軌預算＆公費分攤試算器</h3>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-800">即時匯率換算</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">由於「6 位先鋒老手（滑 7 天住 9 晚）」與「5 位單板新手（滑 5 天含教練與租裝備）」天數與項目不同，調整下方參數即可自動算出兩組人均費用：</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs">
+              <div>
+                <label for="fxRateInput" class="block font-bold text-slate-700 mb-1">日幣匯率 (JPY ➔ TWD)</label>
+                <input id="fxRateInput" type="number" step="0.005" min="0.15" max="0.35" value="0.22" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-900" />
+              </div>
+              <div>
+                <label for="carTotalJpyInput" class="block font-bold text-slate-700 mb-1">2台4WD租車+油資過路費 (8天總日幣)</label>
+                <input id="carTotalJpyInput" type="number" step="5000" min="50000" value="190000" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-900" />
+              </div>
+              <div>
+                <label for="sierraTotalJpyInput" class="block font-bold text-slate-700 mb-1">Sierra Lodge 包棟 5 晚總額 (日幣)</label>
+                <input id="sierraTotalJpyInput" type="number" step="10000" min="100000" value="440000" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-900" />
+              </div>
+              <div>
+                <label for="coachTotalTwdInput" class="block font-bold text-slate-700 mb-1">新手 2 天單板教練課 (每人台幣預估)</label>
+                <input id="coachTotalTwdInput" type="number" step="500" min="3000" value="9500" class="w-full rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-900" />
+              </div>
+            </div>
+
+            <!-- Calculated Output Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5" id="budgetOutputCards"></div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+            <span class="text-xs text-slate-500">※ 不含個人台灣↔東京機票（約 NT$12,000–18,000）</span>
+            <button id="copyBudgetSummaryBtn" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white hover:bg-sky-700 transition">📋 複製預算表到群組</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer with GitHub Pages Quick Guide -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-10 border-t border-slate-800 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <div class="font-bold text-white text-sm">2027 妙高全單板自駕滑雪團 (11人方案A定案版)</div>
+        <p class="mt-0.5">單一 HTML 獨立封裝，支援 GitHub Pages 免伺服器靜態部署與手機響應式瀏覽。</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://akakura-ski.com/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline">赤倉溫泉官網</a>
+        <a href="https://akr-ski.com/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline">赤倉觀光官網</a>
+        <a href="https://alpenblick-resort.com/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline">池之平官網</a>
+        <a href="https://www.princehotels.co.jp/ski/myoko/summer/" target="_blank" rel="noopener noreferrer" class="hover:text-white underline">妙高杉之原官網</a>
+        <a href="https://www.sierralodgemyoko.com/chalet" target="_blank" rel="noopener noreferrer" class="hover:text-white underline">Sierra Lodge Myōkō</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ==================== STATE & STORAGE ====================
+    const STORAGE_KEY = 'myoko_2027_snowboard_v1';
+
+    const DEFAULT_MEMBERS = [
+      { id: 'p1', name: '老手1 (團長/主駕)', role: 'pro', car: 1, room: 'A' },
+      { id: 'p2', name: '老手2 (副駕)', role: 'pro', car: 1, room: 'A' },
+      { id: 'p3', name: '老手3', role: 'pro', car: 1, room: 'B' },
+      { id: 'p4', name: '老手4 (2車主駕)', role: 'pro', car: 2, room: 'B' },
+      { id: 'p5', name: '老手5 (2車副駕)', role: 'pro', car: 2, room: 'B' },
+      { id: 'p6', name: '老手6', role: 'pro', car: 2, room: 'C' },
+      { id: 'b1', name: '新手1', role: 'beg', car: 1, coach: 'A', room: 'C' },
+      { id: 'b2', name: '新手2', role: 'beg', car: 1, coach: 'A', room: 'C' },
+      { id: 'b3', name: '新手3', role: 'beg', car: 1, coach: 'B', room: 'D' },
+      { id: 'b4', name: '新手4', role: 'beg', car: 2, coach: 'B', room: 'D' },
+      { id: 'b5', name: '新手5', role: 'beg', car: 2, coach: 'B', room: 'D' }
+    ];
+
+    const ITINERARY_DATA = [
+      {
+        day: 1,
+        date: '2027/01/14 (四)',
+        phase: 'transit',
+        title: '先鋒組飛抵東京 ➔ 入住上野站前',
+        badge: '移動日',
+        location: '東京上野',
+        lodging: 'APA飯店〈京成上野站前〉或同級',
+        lodgingUrl: 'https://www.apahotel.com/hotel/syutoken/tokyo/keiseiueno-ekimae/',
+        proTrack: '飛抵東京成田／羽田機場 ➔ 搭乘京成 Skyliner（41分鐘直達京成上野站）➔ 辦理入住、檢查 6 人單板板袋與固定器螺絲。',
+        begTrack: '尚未出發（建議在台灣最後確認防摔褲、護膝、護腕與雪鏡都已塞入行李箱）。',
+        dining: '晚餐（6人）：上野阿美橫丁居酒屋聚餐，順便在超商買好隔天一早 07:58 新幹線上的早餐與咖啡。',
+        snowboardTip: 'JR 上野站與京成上野站相距步行 3 分鐘，先鋒組記得先確認隔天早上進 JR 新幹線改札口的電梯位置，推大板袋最省力。',
+        links: [
+          { label: 'APA京成上野站前官網', url: 'https://www.apahotel.com/hotel/syutoken/tokyo/keiseiueno-ekimae/' },
+          { label: '上野住宿攻略', url: 'https://bobbytravel.tw/ueno-hotels/' }
+        ]
+      },
+      {
+        day: 2,
+        date: '2027/01/15 (五)',
+        phase: 'warmup',
+        title: '滑雪 Day 1：飯山站取 2 台四驅車 ➔ 赤倉觀光開滑',
+        badge: '老手開滑 D1',
+        location: '赤倉觀光度假滑雪場',
+        lodging: 'Do膳食公寓飯店 (Pension Do)',
+        lodgingUrl: 'https://tw.trip.com/hotels/myoko-hotel-detail-17452521/pension-do/',
+        proTrack: '07:58 上野搭【北陸新幹線 はくたか553號】➔ 09:43 抵飯山站 ➔ 千曲川口右轉 1 分鐘【日產租車/JR駅レンタカー】取 2 台 4WD 八人座廂型車 ➔ 開車 35 分鐘直達【赤倉觀光度假滑雪場】，搭 Gondola 廂型纜車免拆板直上山腰爽滑 4.5km 紅線！',
+        begTrack: '尚未出發（可準備收拾行李，隔天或 Day 4 出發）。',
+        dining: '午餐：赤倉觀光雪場餐廳｜晚餐（6人）：預約赤倉溫泉街超人氣【食堂園 Shokudoen】吃高級和牛燒肉＆拉麵，滑完泡赤倉溫泉。',
+        snowboardTip: '赤倉觀光擁有 Myoko Kogen Sky Cable 廂型纜車，單板老手第一天暖身不用一直單腳上下吊椅，直接從山頂滑 4.5 公里長紅線超痛快！',
+        links: [
+          { label: 'はくたか553號時刻表', url: 'https://timetables.jreast.co.jp/2610/train/035/038611.html' },
+          { label: '飯山站租車比價', url: 'https://tc.tabirai.net/car/nagano/iiyama_st/' },
+          { label: '赤倉觀光雪場官網', url: 'https://akr-ski.com/' },
+          { label: 'Do膳食公寓飯店', url: 'https://tw.trip.com/hotels/myoko-hotel-detail-17452521/pension-do/' }
+        ]
+      },
+      {
+        day: 3,
+        date: '2027/01/16 (六)',
+        phase: 'warmup',
+        title: '滑雪 Day 2：妙高杉之原 8.5km 長距離＆地形公園',
+        badge: '老手爽滑 D2',
+        location: '妙高杉之原滑雪場',
+        lodging: 'Do膳食公寓飯店 (Pension Do)',
+        lodgingUrl: 'https://tw.trip.com/hotels/myoko-hotel-detail-17452521/pension-do/',
+        proTrack: '08:00 週末提早開滑！開車 10 分鐘抵達【妙高杉之原滑雪場】，6 位單板老手搭 Gondola 衝海拔 1,855m 三田原山頂粉雪，挑戰 8.5 公里超長滑道與 Sugi Park 跳台/Box 公園！',
+        begTrack: '建議今日飛抵東京入住上野或東京站周邊，方便明天一早精神飽滿搭北陸新幹線前往妙高會合！',
+        dining: '下午 16:30 下山後，先開 2 台車去新井市區【イチコスーパー (Ichiko 超市)】預先採買隔天包棟的火鍋湯底、酒水與早餐｜晚餐（6人）：【食堂 しばた】越光米醬汁豬排丼。',
+        snowboardTip: '杉之原週末 08:00 就開纜車！前一天有下雪的話，早上第一趟直衝三田原第 3 吊椅頂端，單板衝粉雪（Powder Surfing）體感無敵。',
+        links: [
+          { label: '妙高杉之原官網', url: 'https://www.princehotels.co.jp/ski/myoko/summer/' },
+          { label: 'イチコスーパー新井店', url: 'https://ekitan.com/transit/access/poi/bmid-447933a36464e388ecd2d2e0f06c1679' },
+          { label: '食堂しばた介紹', url: 'https://myoko.bona.jp/myoko.cn/shibata.html' }
+        ]
+      },
+      {
+        day: 4,
+        date: '2027/01/17 (日)',
+        phase: 'lesson',
+        title: '滑雪 Day 3：11人全員會合 ➔ 赤倉溫泉單板教練課 Day 1 ➔ 入住包棟',
+        badge: '新手教練課 D1',
+        location: '赤倉溫泉滑雪場 ＋ 赤倉觀光',
+        lodging: 'Sierra Lodge Myōkō (包棟第 1 晚)',
+        lodgingUrl: 'https://www.sierralodgemyoko.com/chalet',
+        proTrack: '08:15 從 Do 膳食公寓退房把行李搬上車 ➔ 開車 5 分鐘至【妙高高原站】接 5 位新手 ➔ 帶新手去【Myoko Snowsports 赤倉店】租借 5 日單板與安全帽 ➔ 老手買「赤倉全山共通券」滑赤倉觀光＋熊堂區，中午回 Yodel 小屋與新手吃飯。',
+        begTrack: '搭北陸新幹線至長野站轉北信濃線抵【妙高高原站】➔ 租好單板雪具 ➔ 於【赤倉溫泉滑雪場 Yodel 緩坡區】展開第 1 天中文單板教練課（拆 1對2 與 1對3 兩小班：練穿脫固定器、單腳滑行、Heel/Toe 煞車與落葉飄）。',
+        dining: '16:30 全員 11 人入住包棟木屋【Sierra Lodge Myōkō】｜晚餐（11人）：包棟迎新和牛海鮮火鍋＆新潟清酒派對！',
+        snowboardTip: '單板新手第一天最常摔屁股與跪姿，務必在雪褲內穿好「防摔褲與護膝」！赤倉溫泉 Yodel 區寬廣平緩，完全沒有會卡單板的平路。',
+        links: [
+          { label: '赤倉溫泉滑雪場官網', url: 'https://akakura-ski.com/' },
+          { label: 'Myoko Snowsports 租借', url: 'https://myokosnowsports.com/akakura/' },
+          { label: '潛雪中文教練課', url: 'https://snowdiving-winter.com/service/class/' },
+          { label: 'Sierra Lodge Myōkō', url: 'https://www.sierralodgemyoko.com/chalet' }
+        ]
+      },
+      {
+        day: 5,
+        date: '2027/01/18 (一)',
+        phase: 'lesson',
+        title: '滑雪 Day 4：池之平超寬緩坡 ➔ 單板教練課 Day 2 (練 S-Turn 換刃)',
+        badge: '新手教練課 D2',
+        location: '池之平溫泉 Alpen Blick 滑雪場',
+        lodging: 'Sierra Lodge Myōkō (包棟第 2 晚)',
+        lodgingUrl: 'https://www.sierralodgemyoko.com/chalet',
+        proTrack: '從包棟開 2 台車 5 分鐘直達【池之平 Alpen Blick】，6 位老手直攻上半部紅黑線與樹林粉雪，並在超寬雪道練習高速 Carving（刻滑）。',
+        begTrack: '於【池之平 Kayaba 超寬廣綠線】進行第 2 天中文單板教練課（依昨日進度微調 2+3 分組：從落葉飄進階到 C-Turn 與 S-Turn 連續換刃，練習不用手撐地站起與穩定下吊椅）。',
+        dining: '傍晚：11 人一起泡【池之平 Alpen Blick 100%源泉黑泥露天溫泉】｜晚餐（11人）：預訂 400 席【妙高高原啤酒園 Tatra 館】松葉蟹鐵板牛排百匯＋暢飲 3 款妙高自釀精釀啤酒！',
+        snowboardTip: '池之平擁有全日本數一數二寬敞的綠線，新手練換刃完全不怕撞人；但下半部坡度較緩，單板記得打好滑行蠟（Wax）並維持速度。',
+        links: [
+          { label: '池之平 Alpen Blick 官網', url: 'https://alpenblick-resort.com/' },
+          { label: '黑泥湯溫泉介紹', url: 'https://myokotourism.tw/stay/alpenblick' },
+          { label: 'Tatra 啤酒園介紹', url: 'https://myoko.bona.jp/myokojp/tatora.html' }
+        ]
+      },
+      {
+        day: 6,
+        date: '2027/01/19 (二)',
+        phase: 'together',
+        title: '滑雪 Day 5：11 人全員合滑日 1 ➔ 老手 1 對 1 帶飛池之平',
+        badge: '11人合滑 D1',
+        location: '池之平溫泉 Alpen Blick 滑雪場',
+        lodging: 'Sierra Lodge Myōkō (包棟第 3 晚)',
+        lodgingUrl: 'https://www.sierralodgemyoko.com/chalet',
+        proTrack: '6 位單板老手「1 對 1 認領」5 位剛出師的新手，在最熟悉的【池之平 Alpen Blick】超寬綠線陪滑、糾正換刃重心，並拿運動相機幫新手拍帥氣滑行跟拍影片！',
+        begTrack: '不用上課的實戰第一天！跟著老手在昨天熟悉的池之平寬廣綠線自主滑行，把 S-Turn 換刃練到順暢。',
+        dining: '下午收工順遊：開車 5 分鐘到【いもり池 (井守池)】拍 11 人與妙高山倒影大片｜晚餐（11人）：預訂 60 年老字號【Yabu Soba (やぶそば)】二樓榻榻米宴會席（注意：若遇週二公休可與 Day 7 的 Restaurant Hunter 對調）。',
+        snowboardTip: '老手幫新手跟拍時，池之平 Kayaba 綠線中段視野最開闊，晴天背景就是壯麗群山與野尻湖！',
+        links: [
+          { label: '池之平 Alpen Blick 官網', url: 'https://alpenblick-resort.com/' },
+          { label: 'Yabu Soba 介紹', url: 'https://myoko.bona.jp/myoko/yabu.html' },
+          { label: '井守池景點資訊', url: 'https://travel.rakuten.co.jp/movement/area/201603/' }
+        ]
+      },
+      {
+        day: 7,
+        date: '2027/01/20 (三)',
+        phase: 'together',
+        title: '滑雪 Day 6：11 人全員進軍妙高杉之原 8.5km（或分車看雪猴）',
+        badge: '11人合滑 D2',
+        location: '妙高杉之原滑雪場（或地獄谷野猿公苑）',
+        lodging: 'Sierra Lodge Myōkō (包棟第 4 晚)',
+        lodgingUrl: 'https://www.sierralodgemyoko.com/chalet',
+        proTrack: '11 人全員開 2 台車 10 分鐘抵達【妙高杉之原滑雪場】！大家一起抱單板搭 Gondola 上山，老手一前一後包夾保護新手，沿 Panorama 綠線一路滑下 8.5 公里超長林間雪道！',
+        begTrack: '解鎖人生第一條 8.5 公里超長滑道！（彈性方案：若連滑 3 天大腿痠痛想休腿半天，可分 1 台車自駕 45 分鐘去【地獄谷野猿公苑】看野生雪猴泡溫泉）。',
+        dining: '晚餐（11人）：預訂設有寬敞地下室團體空間的【Restaurant Hunter】（壽喜燒／火鍋／牛排披薩），或外帶【GINZA PIZZA】柴燒披薩＋【NINJA】現捏飯糰回包棟木屋開派對。',
+        snowboardTip: '杉之原 Panorama 綠線風景絕美且坡度穩定，非常適合單板一路順暢巡航到底；在山頂三田原站記得拍 11 人舉單板大合照！',
+        links: [
+          { label: '妙高杉之原官網', url: 'https://www.princehotels.co.jp/ski/myoko/summer/' },
+          { label: '地獄谷雪猴攻略', url: 'https://todolist-japan.com/zh/jigokudani-snow-monkey-park/' },
+          { label: '妙高餐廳總覽', url: 'https://myoko.bona.jp/myoko.cn/restaurant.html' }
+        ]
+      },
+      {
+        day: 8,
+        date: '2027/01/21 (四)',
+        phase: 'together',
+        title: '滑雪 Day 7：赤倉溫泉＋赤倉觀光畢業驗收 ➔ 歸還雪具＆熊堂夜滑',
+        badge: '11人合滑 D3＋夜滑',
+        location: '赤倉溫泉滑雪場 ＋ 赤倉觀光',
+        lodging: 'Sierra Lodge Myōkō (包棟第 5 晚)',
+        lodgingUrl: 'https://www.sierralodgemyoko.com/chalet',
+        proTrack: '白天 11 人暢滑【赤倉溫泉＋赤倉觀光】，下午帶大家去【赤倉觀光飯店 Aqua Bar】喝飲料眺望雪山全景；傍晚熱血老手可加碼體驗全妙高唯一的【赤倉溫泉熊堂區夜滑 (17:00–21:00)】！',
+        begTrack: '回到 Day 4 第一天上課的【赤倉溫泉滑雪場】，驗收 5 天來的暴風成長！下午 16:00 至【Myoko Snowsports】歸還租借的單板與安全帽，輕鬆逛赤倉溫泉街買溫泉饅頭與可麗餅。',
+        dining: '晚餐（11人）：包棟最後一晚「清冰箱澎湃大餐＋新手單板畢業典禮」，晚上在木屋輪流坐按摩椅、打 Xbox 與看 Netflix！',
+        snowboardTip: '晚上要打包隔天退房的行李，老手記得把單板固定器擦乾除鏽、用衣物包覆板刃再裝入板袋。',
+        links: [
+          { label: '赤倉溫泉滑雪場官網', url: 'https://akakura-ski.com/' },
+          { label: '赤倉觀光飯店 Aqua Bar', url: 'https://myokotourism.tw/genre/western/' },
+          { label: '赤倉溫泉街散步指南', url: 'https://blog.andrewplus.com/akakura-onsen/' }
+        ]
+      },
+      {
+        day: 9,
+        date: '2027/01/22 (五)',
+        phase: 'transit',
+        title: '包棟退房 ➔ 順遊戶隱神社／善光寺 ➔ 飯山站還車搭新幹線回東京',
+        badge: '觀光＆回東京',
+        location: '長野戶隱／善光寺 ➔ 飯山站 ➔ 東京',
+        lodging: '東京上野／東京站周邊飯店',
+        lodgingUrl: 'https://bobbytravel.tw/ueno-hotels/',
+        proTrack: '09:30 包棟退房 ➔ 2 台車載滿全團大件行李與板袋，順遊千年巨杉【戶隱神社】或【善光寺】吃信州蕎麥麵 ➔ 15:00 抵達飯山站前加滿油還車 ➔ 搭北陸新幹線回上野／東京。',
+        begTrack: '可把大件行李交給 2 台自駕車載走，一起乘車順遊【善光寺】（或從妙高高原站搭北信濃線至長野站會合），下午一同從飯山站／長野站搭北陸新幹線返回東京。',
+        dining: '午餐：戶隱蕎麥麵或善光寺表參道名店｜晚餐（11人）：東京上野慶功宴（和牛燒肉／壽喜燒），晚上衝刺阿美橫丁藥妝與電器採購！',
+        snowboardTip: '還車前務必在飯山站周邊加油站加滿 Regular 汽油並保留收據給租車店員檢查。',
+        links: [
+          { label: '戶隱觀光協會官網', url: 'https://togakushi-21.jp/' },
+          { label: '善光寺與高原自駕介紹', url: 'https://travel.rakuten.co.jp/movement/area/201603/' },
+          { label: '飯山至上野新幹線訂票', url: 'https://japantravel.navitime.com/zh-tw/booking/jr/search/?departure=00007617&arrival=00004067' }
+        ]
+      },
+      {
+        day: 10,
+        date: '2027/01/23 (六)',
+        phase: 'transit',
+        title: '東京最後採買 ➔ 搭 Skyliner 往機場平安返台',
+        badge: '返國日',
+        location: '東京上野 ➔ 成田／羽田機場',
+        lodging: '溫暖的家',
+        lodgingUrl: 'https://bobbytravel.tw/ueno-hotels/',
+        proTrack: '整理戰利品與單板袋 ➔ 從京成上野站搭乘 Skyliner（41 分鐘直達成田機場，或前往羽田機場）辦理超大件行李（Oversize Baggage）託運返國。',
+        begTrack: '與大部隊一同前往機場搭機，帶著滿滿滑雪影片與回憶平安返台！',
+        dining: '早餐：上野咖啡廳或飯店早餐｜午餐：機場免稅店最後掃貨與拉麵。',
+        snowboardTip: '單板袋託運需走航空公司「大型行李櫃檯」，記得確認板袋總重不超過各航空托運上限（通常 23kg 或 30kg）。',
+        links: [
+          { label: '京成上野站周邊指南', url: 'https://alinalife.tw/ueno-hotel/' }
+        ]
+      }
+    ];
+
+    const RESORTS_DATA = {
+      akakura_onsen: {
+        id: 'akakura_onsen',
+        name: '赤倉溫泉滑雪場 (Akakura Onsen)',
+        tag: 'Day 4 新手首課 ＆ Day 8 全員＋夜滑',
+        driveTime: '距住宿車程約 5 分鐘',
+        trails: '17 條雪道（14 座纜車）',
+        drop: '垂直落差 550m（海拔 650m–1,200m）',
+        longest: '最長滑道 3.0 公里',
+        ticket: '成人一日券約 ¥6,500–¥8,500（可買赤倉觀光共通券）',
+        split: { beg: 50, mid: 30, adv: 20 },
+        gondola: '無廂型纜車（以四人高速吊椅為主，設全妙高唯一夜滑 17:00–22:00）',
+        proRoute: '購買「赤倉全山共通券」，從熊堂區（Kumado）往上連接至隔壁赤倉觀光滑長紅線與非壓雪樹林；Day 8 晚上在熊堂區爽滑夜間粉雪！',
+        begRoute: 'Day 4 第一天在「Yodel 基地緩坡區」上單板教練課！坡度僅 7–10 度、雪道極寬且無卡板平路，最適合練單腳滑行、Heel/Toe 落葉飄與第一次上下吊椅。',
+        snowboardAlert: '從赤倉觀光跨回赤倉溫泉的聯絡道有一小段平緩坡，單板切記維持直板速度（Keep Speed）才不用拆後腳推板。',
+        meetingPoint: '📍 11 人集合點：Yodel 基地資訊中心前廣場 ／ 午餐會合點：山腰 Yodel Lodge 餐廳',
+        url: 'https://akakura-ski.com/',
+        subUrl: 'https://myokotourism.tw/ski_resort/akakura-ski'
+      },
+      akakura_kanko: {
+        id: 'akakura_kanko',
+        name: '赤倉觀光度假滑雪場 (Akakura Kanko / 新赤倉)',
+        tag: 'Day 2 老手首滑 ＆ Day 4/8 跨區爽滑',
+        driveTime: '距住宿車程約 5 分鐘',
+        trails: '10 條雪道（1 座廂型纜車＋6 座吊椅）',
+        drop: '垂直落差 760m（海拔 740m–1,500m）',
+        longest: '最長滑道 4.5 公里',
+        ticket: '成人一日券約 ¥5,400–¥7,000（4小時券 ¥5,400）',
+        split: { beg: 40, mid: 30, adv: 30 },
+        gondola: '有 Myoko Kogen Sky Cable 廂型纜車（單板免拆固定器直達山腰！）',
+        proRoute: 'Day 2 飯山取車後第一站！直接抱單板搭 Sky Cable 廂型纜車上山，一路順滑 4.5 公里 Champion 與 Hotel B 紅黑線，粉雪日地形起伏超好玩。',
+        begRoute: 'Day 8 最後一天若新手已能穩定 S-Turn 換刃，可在山腳 Hotel A 寬緩綠線滑行，並一起去赤倉觀光飯店頂樓 Aqua Bar 喝下午茶看野尻湖全景。',
+        snowboardAlert: '上半部 Champion 區偏陡且雪深，建議留給 6 位單板老手；新手活動範圍鎖定山腳綠線或隔壁赤倉溫泉區。',
+        meetingPoint: '📍 11 人集合點：Sky Cable 廂型纜車站山麓大樓 ／ 景觀打卡點：赤倉觀光飯店 Aqua Bar',
+        url: 'https://akr-ski.com/',
+        subUrl: 'https://www.kkday.com/zh-hk/blog/japan-ski-guide/129380/myoko-ski-resort-guide-2'
+      },
+      ikenotaira: {
+        id: 'ikenotaira',
+        name: '池之平溫泉 Alpen Blick 滑雪場 (Ikenotaira)',
+        tag: 'Day 5 新手第 2 課 ＆ Day 6 全員 11 人合滑',
+        driveTime: '距住宿車程約 5 分鐘',
+        trails: '10 條雪道（6 座吊椅纜車）',
+        drop: '垂直落差 740m（海拔 760m–1,500m）',
+        longest: '最長滑道 4.0 公里',
+        ticket: '成人一日券約 ¥6,900（兩日券約 ¥12,000）',
+        split: { beg: 35, mid: 45, adv: 20 },
+        gondola: '無廂型纜車（以四人高速長吊椅為主，人潮比赤倉少、雪道超寬）',
+        proRoute: '上半部 Alpen Blick 區紅黑線與林間道（Tree Run）人少粉雪深，下半部超寬雪道是單板老手練習高速 Carving（刻滑貼地）與幫新手拍跟拍影片的天堂！',
+        begRoute: 'Day 5 在全日本數一數二寬廣的「Kayaba 綠線」上第 2 天單板課，練習 C-Turn 與 S-Turn 換刃完全不怕撞到人；Day 6 由 6 位老手 1 對 1 伴滑驗收！',
+        snowboardAlert: '⚠️ 單板必看：池之平下半部坡度極為平緩，遇到大雪日粉雪深厚時速度會變慢，出發前務必幫單板打好低溫滑行蠟（Wax），滑行時少做大幅度橫推煞車！',
+        meetingPoint: '📍 11 人集合點：主售票處旁 Alpen Blick 基地餐廳 ／ 滑後必去：黑泥露天溫泉＋Tatra 精釀啤酒園',
+        url: 'https://alpenblick-resort.com/',
+        subUrl: 'https://www.snowmonkeyresorts.com/zh-hant/smr/myoko-kogen/myoko-kogen-ski-resorts/'
+      },
+      suginohara: {
+        id: 'suginohara',
+        name: '妙高杉之原滑雪場 (Myoko Suginohara)',
+        tag: 'Day 3 老手爽滑 ＆ Day 7 全員挑戰 8.5km',
+        driveTime: '距住宿車程約 10 分鐘',
+        trails: '16 條雪道（1 座廂型纜車＋4 座吊椅）',
+        drop: '垂直落差 1,124m（全妙高最高！海拔 731m–1,855m）',
+        longest: '最長滑道 8.5 公里（全日本最長級！）',
+        ticket: '成人一日券約 ¥7,000',
+        split: { beg: 40, mid: 40, adv: 20 },
+        gondola: '有 Suginohara Gondola 廂型纜車（單板免拆板直上山腰！）',
+        proRoute: 'Day 3 週末 08:00 搶頭香搭 Gondola 轉三田原第 3 吊椅衝海拔 1,855m 頂級乾粉雪，中段狂刷著名的「Sugi Park 地形公園」（跳台、Box、Rail 一應俱全）。',
+        begRoute: 'Day 7 全員 11 人一起搭 Gondola 上山，由老手前後護航，沿著坡度穩定的 Panorama 綠線分段滑完人生第一條 8.5 公里超長林間滑道！',
+        snowboardAlert: '8.5 公里滑道對大腿肌耐力是一大考驗，建議每滑 2 公里在林間道寬闊處停下拍照休息，千萬別停在雪道盲彎處。',
+        meetingPoint: '📍 11 人集合點：Gondola 山頂站觀景台（遠眺野尻湖拍大合照）＆ 三田原山腰餐廳群',
+        url: 'https://www.princehotels.co.jp/ski/myoko/summer/',
+        subUrl: 'https://snowdiving-winter.com/%E5%A6%99%E9%AB%98%E6%BB%91%E9%9B%AA%E6%94%BB%E7%95%A5/'
+      },
+      madarao_arai: {
+        id: 'madarao_arai',
+        name: '備案雪場：斑尾高原 (Madarao) ＆ 樂天新井 (Lotte Arai)',
+        tag: '大雪／強風日老手彈性備案（車程 25 分鐘）',
+        driveTime: '距住宿車程約 25 分鐘',
+        trails: '斑尾 30+ 條樹林道 ／ 樂天新井 15 條＋超大非壓雪碗',
+        drop: '斑尾 440m ／ 樂天新井 951m',
+        longest: '斑尾 2.5 公里 ／ 樂天新井 5.2 公里',
+        ticket: '斑尾約 ¥8,500 ／ 樂天新井約 ¥6,300–¥7,500',
+        split: { beg: 30, mid: 40, adv: 30 },
+        gondola: '樂天新井設大型廂型纜車；斑尾高原以吊椅為主',
+        proRoute: '若 Day 2 飯山站取車後想直接順路開滑，20 分鐘可達「斑尾高原」刷超過 30 條認證樹林道（Tree Run）；若遇暴雪想衝深粉雪碗，可開 25 分鐘去「樂天新井」。',
+        begRoute: '這兩座雪場偏中高階粉雪與樹林玩家導向，5 位單板新手建議維持方案 A 在赤倉溫泉、池之平與杉之原練習體驗最佳。',
+        snowboardAlert: '前往斑尾高原屬微幅爬坡山路，務必確認 4WD 模式開啟；樂天新井非壓雪區雪極深，單板需將固定器微調後移（Setback）防潛水。',
+        meetingPoint: '📍 斑尾集合點：Heidi 餐廳前 ／ 樂天新井集合點：Village Station 纜車大樓',
+        url: 'https://www.madarao.jp/',
+        subUrl: 'https://www.lottehotel.com/arai-resort/ja/snow/ski-course/information'
+      }
+    };
+
+    const PLANS_COMPARISON = [
+      {
+        code: 'A',
+        name: '方案 A：經典妙高四霸王（團員主選 ✅）',
+        d23: 'D2 赤倉觀光 ＋ D3 妙高杉之原',
+        d45: 'D4 赤倉溫泉（新手課1）＋ D5 池之平（新手課2）',
+        d68: 'D6 池之平 ＋ D7 妙高杉之原(8.5km) ＋ D8 赤倉溫泉&觀光(含夜滑)',
+        pros: '每天車程僅 5–10 分鐘！2 座有 Gondola 免拆板、池之平超寬綠線練換刃最穩，老手新手雙贏。'
+      },
+      {
+        code: 'B',
+        name: '方案 B：順路斑尾樹林＋妙高三場（樹林備案）',
+        d23: 'D2 斑尾高原（飯山取車順路）＋ D3 妙高杉之原',
+        d45: 'D4–D5 連兩天赤倉溫泉上課（老手買共通券滑赤倉觀光）',
+        d68: 'D6 池之平 ＋ D7 妙高杉之原 ＋ D8 赤倉溫泉',
+        pros: 'Day 2 從飯山站開 20 分鐘先解鎖長野樹林名場「斑尾高原」，Day 4–5 新手固定同一雪場免適應。'
+      },
+      {
+        code: 'C',
+        name: '方案 C：豪華樂天新井＋妙高三場（暴雪日備案）',
+        d23: 'D2 赤倉觀光 ＋ D3 樂天新井度假村',
+        d45: 'D4 赤倉溫泉（新手課1）＋ D5 池之平（新手課2）',
+        d68: 'D6 池之平 ＋ D7 妙高杉之原 ＋ D8 赤倉溫泉',
+        pros: '若 Day 3 遇超大暴雪，6 位單板老手可去樂天新井衝國際級深粉雪碗（Freeride Zones）。'
+      }
+    ];
+
+    const POI_DATA = [
+      {
+        cat: 'food',
+        groupFriendly: true,
+        name: '妙高高原啤酒園 Tatra 館 (タトラ館)',
+        area: '池之平溫泉 Alpen Blick 內（車程 5 分鐘）',
+        desc: '擁有 400 席超寬敞歐風空間！提供松葉蟹、鐵板牛排、壽司、天婦羅等超過 100 道百匯自助餐，並能暢飲妙高湧水自釀的 3 款精釀啤酒，11 人聚餐免分桌首選！',
+        url: 'https://myoko.bona.jp/myokojp/tatora.html',
+        tag: '11人聚餐首選・百匯＋精釀啤酒'
+      },
+      {
+        cat: 'food',
+        groupFriendly: true,
+        name: 'Yabu Soba (やぶそば 霧下蕎麥麵)',
+        area: '妙高溫泉關川（車程 6 分鐘）',
+        desc: '創業 60 年的家族老店，主打名產「霧下蕎麥麵」配現炸天婦羅、南蠻炸雞與山菜，二樓設有榻榻米宴會空間非常適合 11 人團體預約（週二公休）。',
+        url: 'https://myoko.bona.jp/myoko/yabu.html',
+        tag: '二樓榻榻米團體席・60年老店'
+      },
+      {
+        cat: 'food',
+        groupFriendly: true,
+        name: 'Restaurant Hunter (ハンター)',
+        area: '赤倉溫泉區（車程 5 分鐘）',
+        desc: '設有寬敞的地下室團體座位空間！菜單涵蓋壽喜燒、日式火鍋、壽司以及西式牛排與披薩，滿足 11 人不同口味需求。',
+        url: 'https://myoko.bona.jp/myoko.cn/restaurant.html',
+        tag: '地下室大空間・壽喜燒與西餐'
+      },
+      {
+        cat: 'food',
+        groupFriendly: false,
+        name: '食堂 しばた (Restaurant Shibata)',
+        area: '赤倉溫泉街（車程 5 分鐘）',
+        desc: '冬季最受歡迎的赤倉名店，使用自家雪水灌溉種植的越光米，必點新潟鄉土料理「醬汁豬排丼」、竹筍湯與火鍋（建議 Day 2–3 先鋒 6 人前往並提前訂位）。',
+        url: 'https://myoko.bona.jp/myoko.cn/shibata.html',
+        tag: '先鋒6人必吃・越光米豬排丼'
+      },
+      {
+        cat: 'food',
+        groupFriendly: false,
+        name: '食堂園 (Shokudoen 日式燒肉＆拉麵)',
+        area: '赤倉溫泉街（車程 5 分鐘）',
+        desc: '在地人與雪友激推的和牛燒肉配拉麵名店！店面較小但肉質極佳，適合 Day 2 先鋒組 6 人提前電話預約補充體力。',
+        url: 'https://myoko.bona.jp/myoko.cn/restaurant.html',
+        tag: '先鋒6人必訂・高級和牛燒肉'
+      },
+      {
+        cat: 'food',
+        groupFriendly: true,
+        name: 'GINZA PIZZA ＆ NINJA 飯糰清酒吧',
+        area: '赤倉溫泉中心（車程 5 分鐘）',
+        desc: 'A.I.R. 團隊打造的柴燒披薩店與家庭式手工飯糰清酒吧，除內用外也非常適合 11 人外帶披薩與飯糰回包棟木屋舉辦電影派對！',
+        url: 'https://myoko.bona.jp/myoko.cn/restaurant.html',
+        tag: '外帶回包棟開趴超推'
+      },
+      {
+        cat: 'market',
+        groupFriendly: true,
+        name: 'イチコスーパー 新井店 (Ichiko 超市)',
+        area: '妙高市新井石塚町（車程約 18 分鐘）',
+        desc: '妙高地區生鮮品質極佳的大型超市（09:30–20:00），日本海新鮮生魚片、新潟和牛、火鍋蔬菜、越光米與地酒一應俱全，包棟開伙採買主力！',
+        url: 'https://ekitan.com/transit/access/poi/bmid-447933a36464e388ecd2d2e0f06c1679',
+        tag: '包棟火鍋採買主力・09:30–20:00'
+      },
+      {
+        cat: 'market',
+        groupFriendly: true,
+        name: '業務スーパー 新井店 ＆ 7-Eleven 田口店',
+        area: '新井市區（車程 18 分）／ 田口（步行 2 分）',
+        desc: '大份量肉品、火鍋湯底與冷凍食材可於業務超市一次掃貨；日常早餐飯糰、咖啡、啤酒與冰塊則走 2 分鐘到 Sierra Lodge 巷口的 24 小時 7-11 即可解決。',
+        url: 'https://www.navitime.co.jp/category/0202/15217/',
+        tag: '大份量食材＆24H超商補給'
+      },
+      {
+        cat: 'onsen',
+        groupFriendly: true,
+        name: '池之平溫泉 Hotel Alpen Blick 黑泥露天風呂',
+        area: '池之平滑雪場旁（車程 5 分鐘）',
+        desc: '引流自妙高山麓的 100% 源泉黑泥湯，富含天然礦物質，露天風呂寬敞且能遠眺雪景，Day 5 滑完池之平直接全員泡湯最享受！',
+        url: 'https://myokotourism.tw/stay/alpenblick',
+        tag: '100%源泉黑泥湯・寬敞大浴場'
+      },
+      {
+        cat: 'onsen',
+        groupFriendly: true,
+        name: '赤倉觀光飯店 Aqua Bar ＆ Bakery & Table',
+        area: '赤倉觀光滑雪場（車程 5 分鐘）',
+        desc: '曾接待日本皇室的傳奇飯店，頂樓 Aqua Bar 擁有無敵水盤雪山景觀；山麓纜車站旁則有 Bakery & Table 現烤麵包與甜點咖啡。',
+        url: 'https://myokotourism.tw/genre/western/',
+        tag: '皇室級絕景水盤酒吧＆烘焙坊'
+      },
+      {
+        cat: 'tour',
+        groupFriendly: true,
+        name: '地獄谷野猿公苑 (Snow Monkey Park)',
+        area: '長野縣山之內町（自駕車程約 45–50 分鐘）',
+        desc: '全球唯一能近距離觀察野生日本獼猴泡溫泉的奇景（冬季 09:00–16:00，門票 ¥800）。自駕停上林溫泉後需走 35 分鐘森林雪道，務必穿防滑防水雪靴！',
+        url: 'https://todolist-japan.com/zh/jigokudani-snow-monkey-park/',
+        tag: '休腿日首選・世界唯一泡湯雪猴'
+      },
+      {
+        cat: 'tour',
+        groupFriendly: true,
+        name: '戶隱神社 ＆ 長野善光寺',
+        area: '長野市（自駕車程約 35–45 分鐘）',
+        desc: 'Day 9 退房前往飯山還車途中可順遊！漫步戶隱神社數百年巨杉雪道、品嚐日本三大蕎麥麵之一的「戶隱蕎麥麵」，或參拜國寶級古剎善光寺。',
+        url: 'https://togakushi-21.jp/',
+        tag: 'Day 9 退房順遊・千年巨杉與古剎'
+      },
+      {
+        cat: 'tour',
+        groupFriendly: true,
+        name: 'いもり池 (井守池) ＆ 野尻湖',
+        area: '妙高高原／信濃町（車程 5–7 分鐘）',
+        desc: '離包棟木屋僅 5 分鐘！晴天時可在井守池拍下「妙高山倒映池面」的明信片神照；開車 7 分鐘可達野尻湖欣賞雪中芙蓉湖景與冬季冰釣公魚。',
+        url: 'https://travel.rakuten.co.jp/movement/area/201603/',
+        tag: '車程5分鐘・11人雪山倒影必拍'
+      }
+    ];
+
+    const GEAR_CHECKLIST = [
+      { id: 'g1', text: '🌱 單板防摔褲（保護尾椎與臀部，新手第 1–2 天必穿！）', tag: '新手必備' },
+      { id: 'g2', text: '🌱 單板護膝 ＆ 護腕（練習 Toe-side 跪姿與防撐地扭傷）', tag: '新手必備' },
+      { id: 'g3', text: '🚗 台灣駕照正本 ＋ 日文譯本（或有效國際駕照，自駕司機必備）', tag: '自駕必備' },
+      { id: 'g4', text: '🎿 防水雪衣 ＆ 雪褲（建議耐水壓 10,000mm 以上，勿穿牛仔褲）', tag: '全員必備' },
+      { id: 'g5', text: '🥽 雙層防霧雪鏡（妙高常下大雪，建議選增光／全天候鏡片）', tag: '全員必備' },
+      { id: 'g6', text: '🧤 防水滑雪手套 ＋ 觸控內層手套（單板常摸雪面，防水要好）', tag: '全員必備' },
+      { id: 'g7', text: '🧦 羊毛高筒滑雪襪 2–3 雙（長度需高過單板雪鞋靴筒防磨小腿）', tag: '全員必備' },
+      { id: 'g8', text: '👕 排汗快乾底層衣褲 ＆ 刷毛中層（切勿穿純棉發熱衣以免流汗失溫）', tag: '全員必備' },
+      { id: 'g9', text: '🧣 防風脖圍／面罩 ＋ 保暖毛帽（搭纜車與逛溫泉街保暖）', tag: '全員必備' },
+      { id: 'g10', text: '🥾 防水防滑高筒雪靴（逛赤倉溫泉街、走雪猴森林步道必穿）', tag: '全員必備' },
+      { id: 'g11', text: '🔥 固體／液體低溫滑行蠟 ＆ 簡易螺絲起子（老手滑池之平必備）', tag: '老手裝備' },
+      { id: 'g12', text: '🩹 個人常備藥、痠痛貼布、護唇膏與海外滑雪專項旅平險', tag: '全員必備' }
+    ];
+
+    const ROOM_DEFS = [
+      { code: 'A', name: 'Room A：2F 主臥雙床房', desc: '適合先鋒駕駛或早睡團員（建議 2–3 人）' },
+      { code: 'B', name: 'Room B：2F 山景三人房', desc: '西式舒適床鋪（建議 3 人）' },
+      { code: 'C', name: 'Room C：溫馨家庭房', desc: '鄰近起居空間（建議 3 人）' },
+      { code: 'D', name: 'Room D：團體通鋪／加床區', desc: '適合夜貓子打電動聊天（建議 2–3 人）' }
+    ];
+
+    let appState = {
+      activeTab: 'itinerary',
+      roleFilter: 'all',
+      phaseFilter: 'all',
+      selectedResort: 'akakura_onsen',
+      highlightedPlan: 'A',
+      poiCat: 'all',
+      groupOnly: false,
+      expandedDays: { 1: true, 2: true, 3: false, 4: true, 5: true, 6: false, 7: false, 8: false, 9: false, 10: false },
+      confirmedDays: {},
+      checkedGear: {},
+      members: JSON.parse(JSON.stringify(DEFAULT_MEMBERS))
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.members && parsed.members.length === 11) appState.members = parsed.members;
+          if (parsed.confirmedDays) appState.confirmedDays = parsed.confirmedDays;
+          if (parsed.checkedGear) appState.checkedGear = parsed.checkedGear;
+        }
+      } catch (e) {
+        // Ignore storage error in sandboxed iframe
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          members: appState.members,
+          confirmedDays: appState.confirmedDays,
+          checkedGear: appState.checkedGear
+        }));
+      } catch (e) {
+        // Ignore storage error in sandboxed iframe
+      }
+    }
+
+    // ==================== TOAST & CLIPBOARD ====================
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const el = document.createElement('div');
+      const bg = type === 'success' ? 'bg-slate-900 border-emerald-500/40' : 'bg-rose-900 border-rose-400';
+      el.className = `${bg} text-white border px-4 py-3 rounded-xl shadow-xl text-xs font-semibold flex items-center justify-between gap-2 pointer-events-auto transition-all duration-300`;
+      el.innerHTML = `<span>${message}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
+      }, 2800);
+    }
+
+    function copyTextToClipboard(text, successMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(successMsg);
+        }).catch(() => {
+          fallbackCopy(text, successMsg);
+        });
+      } else {
+        fallbackCopy(text, successMsg);
+      }
+    }
+
+    function fallbackCopy(text, successMsg) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMsg);
+      } catch (e) {
+        showToast('複製失敗，請手動選取複製', 'error');
+      }
+      document.body.removeChild(ta);
+    }
+
+    // ==================== RENDER: TAB 1 (ITINERARY) ====================
+    function renderQuickJumpBar() {
+      const bar = document.getElementById('quickJumpBar');
+      const confirmedCount = Object.values(appState.confirmedDays).filter(Boolean).length;
+      document.getElementById('completedDaysCounter').textContent = `已確認 ${confirmedCount} / 10 天`;
+
+      bar.innerHTML = ITINERARY_DATA.map(item => {
+        const isDone = !!appState.confirmedDays[item.day];
+        const shortLoc = item.day === 1 || item.day >= 9 ? '東京' : (item.day <= 3 ? 'Do公寓' : 'Sierra包棟');
+        return `
+          <button type="button" data-jump-day="${item.day}" class="quick-jump-btn text-left p-2 rounded-xl border transition ${isDone ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-100' : 'bg-white/10 border-white/15 hover:bg-white/20 text-white'}">
+            <div class="flex items-center justify-between text-[11px] font-bold">
+              <span>D${item.day}</span>
+              <span>${isDone ? '✓' : ''}</span>
+            </div>
+            <div class="text-[10px] text-slate-300 truncate mt-0.5">${shortLoc}</div>
+          </button>
+        `;
+      }).join('');
+
+      bar.querySelectorAll('.quick-jump-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const d = parseInt(btn.getAttribute('data-jump-day'), 10);
+          appState.phaseFilter = 'all';
+          appState.expandedDays[d] = true;
+          updatePhaseFilterButtons();
+          renderItineraryCards();
+          const target = document.getElementById(`day-card-${d}`);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
+
+    function renderItineraryCards() {
+      const container = document.getElementById('itineraryCardsContainer');
+      const filtered = ITINERARY_DATA.filter(item => {
+        if (appState.phaseFilter === 'all') return true;
+        return item.phase === appState.phaseFilter;
+      });
+
+      container.innerHTML = filtered.map(item => {
+        const isExpanded = !!appState.expandedDays[item.day];
+        const isConfirmed = !!appState.confirmedDays[item.day];
+
+        const proHighlight = appState.roleFilter === 'pro' ? 'ring-2 ring-sky-500 bg-sky-50' : (appState.roleFilter === 'beg' ? 'opacity-60 bg-slate-50' : 'bg-sky-50/70');
+        const begHighlight = appState.roleFilter === 'beg' ? 'ring-2 ring-emerald-500 bg-emerald-50' : (appState.roleFilter === 'pro' ? 'opacity-60 bg-slate-50' : 'bg-emerald-50/70');
+
+        let badgeClass = 'bg-slate-200 text-slate-800';
+        if (item.phase === 'warmup') badgeClass = 'bg-sky-100 text-sky-800';
+        if (item.phase === 'lesson') badgeClass = 'bg-emerald-100 text-emerald-800';
+        if (item.phase === 'together') badgeClass = 'bg-amber-100 text-amber-900';
+
+        const linksHtml = item.links.map(l => `
+          <a href="${l.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 transition">
+            <span>🔗 ${l.label}</span>
+          </a>
+        `).join('');
+
+        return `
+          <article id="day-card-${item.day}" class="bg-white rounded-2xl shadow-sm border ${isConfirmed ? 'border-emerald-400' : 'border-slate-200'} overflow-hidden transition">
+            <!-- Card Header -->
+            <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer hover:bg-slate-50/80 transition day-header-toggle" data-day="${item.day}">
+              <div class="flex items-start sm:items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl ${isConfirmed ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-white'} flex flex-col items-center justify-center shrink-0 font-extrabold">
+                  <span class="text-[10px] uppercase tracking-wider opacity-80">DAY</span>
+                  <span class="text-lg leading-none">${item.day}</span>
+                </div>
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-bold text-slate-500">${item.date}</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${item.badge}</span>
+                    <span class="text-xs text-slate-500">📍 ${item.location}</span>
+                  </div>
+                  <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">${item.title}</h3>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between sm:justify-end gap-2 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100">
+                <button type="button" data-confirm-day="${item.day}" class="confirm-day-btn px-3 py-1.5 rounded-xl text-xs font-bold border transition ${isConfirmed ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'}">
+                  ${isConfirmed ? '✅ 已讀確認' : '○ 標記確認'}
+                </button>
+                <span class="text-slate-400 text-sm font-bold px-2">${isExpanded ? '▲ 收合' : '▼ 展開'}</span>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="${isExpanded ? 'block' : 'hidden'} px-4 sm:px-5 pb-5 pt-2 border-t border-slate-100 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <!-- Pro Track -->
+                <div class="p-3.5 rounded-xl border border-sky-200/80 ${proHighlight} transition">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-extrabold text-sky-900">🔥 先鋒會滑組 (6人・單板老手)</span>
+                    <span class="text-[11px] font-semibold text-sky-700">2台4WD自駕</span>
+                  </div>
+                  <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">${item.proTrack}</p>
+                </div>
+
+                <!-- Beginner Track -->
+                <div class="p-3.5 rounded-xl border border-emerald-200/80 ${begHighlight} transition">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-extrabold text-emerald-900">🌱 單板新手組 (5人・Day 4會合)</span>
+                    <span class="text-[11px] font-semibold text-emerald-700">2+3小班教學</span>
+                  </div>
+                  <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">${item.begTrack}</p>
+                </div>
+              </div>
+
+              <!-- Dining, Lodging & Snowboard Pro Tip -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 text-xs sm:text-sm">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 lg:col-span-2">
+                  <div class="font-bold text-slate-900 mb-1">🍲 餐飲、採買與晚間活動</div>
+                  <p class="text-slate-700 leading-relaxed">${item.dining}</p>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-50/70 border border-amber-200">
+                  <div class="font-bold text-amber-950 mb-1">🏡 當晚住宿</div>
+                  <a href="${item.lodgingUrl}" target="_blank" rel="noopener noreferrer" class="font-bold text-sky-700 hover:underline block">${item.lodging} ↗</a>
+                  <p class="text-xs text-amber-900 mt-1.5">🏂 <strong>單板提醒：</strong>${item.snowboardTip}</p>
+                </div>
+              </div>
+
+              <!-- Verified Source Links -->
+              <div class="flex flex-wrap items-center gap-2 pt-1">
+                <span class="text-xs font-bold text-slate-400">相關連結：</span>
+                ${linksHtml}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Attach listeners
+      container.querySelectorAll('.day-header-toggle').forEach(header => {
+        header.addEventListener('click', (e) => {
+          if (e.target.closest('.confirm-day-btn')) return;
+          const d = parseInt(header.getAttribute('data-day'), 10);
+          appState.expandedDays[d] = !appState.expandedDays[d];
+          renderItineraryCards();
+        });
+      });
+
+      container.querySelectorAll('.confirm-day-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const d = parseInt(btn.getAttribute('data-confirm-day'), 10);
+          appState.confirmedDays[d] = !appState.confirmedDays[d];
+          saveState();
+          renderQuickJumpBar();
+          renderItineraryCards();
+        });
+      });
+    }
+
+    function updatePhaseFilterButtons() {
+      document.querySelectorAll('.phase-filter-btn').forEach(btn => {
+        const p = btn.getAttribute('data-phase');
+        if (p === appState.phaseFilter) {
+          btn.className = 'phase-filter-btn bg-sky-100 text-sky-800 border border-sky-300 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition';
+        } else {
+          btn.className = 'phase-filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition';
+        }
+      });
+    }
+
+    // ==================== RENDER: TAB 2 (RESORTS) ====================
+    function renderResortsTab() {
+      const btnContainer = document.getElementById('resortSelectorButtons');
+      const detailContainer = document.getElementById('resortDetailContainer');
+
+      btnContainer.innerHTML = Object.values(RESORTS_DATA).map(r => {
+        const active = r.id === appState.selectedResort;
+        return `
+          <button type="button" data-resort="${r.id}" class="resort-sel-btn px-3 py-1.5 rounded-xl text-xs font-bold transition ${active ? 'bg-sky-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
+            ${r.name.split(' ')[0]}
+          </button>
+        `;
+      }).join('');
+
+      btnContainer.querySelectorAll('.resort-sel-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.selectedResort = btn.getAttribute('data-resort');
+          renderResortsTab();
+        });
+      });
+
+      const r = RESORTS_DATA[appState.selectedResort];
+      detailContainer.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-5 bg-slate-50 rounded-2xl p-4 border border-slate-200 flex flex-col justify-between space-y-4">
+            <div>
+              <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-sky-100 text-sky-900">${r.tag}</span>
+              <h3 class="text-lg font-extrabold text-slate-900 mt-2">${r.name}</h3>
+              <p class="text-xs text-slate-500 mt-0.5">🚗 ${r.driveTime} ｜ 🎫 ${r.ticket}</p>
+
+              <div class="mt-4 space-y-2 text-xs sm:text-sm">
+                <div class="flex justify-between py-1.5 border-b border-slate-200/80">
+                  <span class="text-slate-500 font-medium">雪道與纜車規模</span>
+                  <span class="font-bold text-slate-800">${r.trails}</span>
+                </div>
+                <div class="flex justify-between py-1.5 border-b border-slate-200/80">
+                  <span class="text-slate-500 font-medium">海拔與垂直落差</span>
+                  <span class="font-bold text-slate-800">${r.drop}</span>
+                </div>
+                <div class="flex justify-between py-1.5 border-b border-slate-200/80">
+                  <span class="text-slate-500 font-medium">最長滑行距離</span>
+                  <span class="font-bold text-emerald-700">${r.longest}</span>
+                </div>
+                <div class="py-1.5">
+                  <span class="text-slate-500 font-medium block mb-1">廂型纜車 (Gondola) 與夜滑配置</span>
+                  <span class="font-semibold text-slate-800">${r.gondola}</span>
+                </div>
+              </div>
+
+              <!-- Trail Difficulty Bar -->
+              <div class="mt-4">
+                <div class="text-xs font-bold text-slate-700 mb-1.5">雪道難度比例（綠線 ${r.split.beg}% / 紅線 ${r.split.mid}% / 黑線 ${r.split.adv}%）</div>
+                <div class="w-full h-3.5 rounded-full overflow-hidden flex">
+                  <div style="width:${r.split.beg}%" class="bg-emerald-500" title="初級綠線"></div>
+                  <div style="width:${r.split.mid}%" class="bg-rose-500" title="中級紅線"></div>
+                  <div style="width:${r.split.adv}%" class="bg-slate-900" title="高級黑線"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+              <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white hover:bg-sky-700 transition">前往雪場官方網站 ↗</a>
+              <a href="${r.subUrl}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition">查看中文雪道指南 ↗</a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 space-y-3.5 flex flex-col justify-between">
+            <div class="p-4 rounded-2xl bg-sky-50 border border-sky-200">
+              <div class="text-xs font-extrabold text-sky-900 uppercase mb-1">🔥 6 位單板老手爽滑攻略</div>
+              <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">${r.proRoute}</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+              <div class="text-xs font-extrabold text-emerald-900 uppercase mb-1">🌱 5 位單板新手練功＆上課攻略</div>
+              <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">${r.begRoute}</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200">
+              <div class="text-xs font-extrabold text-amber-950 uppercase mb-1">⚠️ 單板防卡板提醒 ＆ 11人集合點</div>
+              <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">${r.snowboardAlert}</p>
+              <p class="text-xs font-bold text-amber-900 mt-2 pt-2 border-t border-amber-200/70">${r.meetingPoint}</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Render Plan Comparison Table
+      const tbody = document.getElementById('planComparisonTableBody');
+      tbody.innerHTML = PLANS_COMPARISON.map(p => {
+        const isHl = p.code === appState.highlightedPlan;
+        return `
+          <tr class="${isHl ? 'bg-sky-50/90 font-medium' : 'hover:bg-slate-50'} transition">
+            <td class="p-3 font-bold text-slate-900">${p.name}</td>
+            <td class="p-3 text-slate-700">${p.d23}</td>
+            <td class="p-3 text-slate-700">${p.d45}</td>
+            <td class="p-3 text-slate-700">${p.d68}</td>
+            <td class="p-3 text-slate-700">${p.pros}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==================== RENDER: TAB 3 (CAR & COACH ASSIGNER) ====================
+    function renderCarAndCoachAssigner() {
+      const car1List = document.getElementById('car1MembersList');
+      const car2List = document.getElementById('car2MembersList');
+      const coachAList = document.getElementById('coachAMembersList');
+      const coachBList = document.getElementById('coachBMembersList');
+
+      const car1Members = appState.members.filter(m => m.car === 1);
+      const car2Members = appState.members.filter(m => m.car === 2);
+      document.getElementById('car1CountBadge').textContent = `${car1Members.length} / 8 座`;
+      document.getElementById('car2CountBadge').textContent = `${car2Members.length} / 8 座`;
+
+      const renderMemberChip = (m) => {
+        const badgeColor = m.role === 'pro' ? 'bg-sky-700 text-white' : 'bg-emerald-700 text-white';
+        return `
+          <button type="button" data-toggle-car="${m.id}" class="car-member-chip px-2.5 py-1.5 rounded-xl text-xs font-bold bg-white border border-slate-200 shadow-sm hover:border-sky-400 flex items-center gap-1.5 transition" title="點擊切換至另一台車">
+            <span class="w-4 h-4 rounded-full ${badgeColor} text-[10px] flex items-center justify-center">${m.role === 'pro' ? '老' : '新'}</span>
+            <span class="text-slate-800">${m.name}</span>
+            <span class="text-slate-400 text-[10px]">⇄</span>
+          </button>
+        `;
+      };
+
+      car1List.innerHTML = car1Members.map(renderMemberChip).join('');
+      car2List.innerHTML = car2Members.map(renderMemberChip).join('');
+
+      document.querySelectorAll('.car-member-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const id = chip.getAttribute('data-toggle-car');
+          const member = appState.members.find(m => m.id === id);
+          if (member) {
+            member.car = member.car === 1 ? 2 : 1;
+            saveState();
+            renderCarAndCoachAssigner();
+          }
+        });
+      });
+
+      const coachAMembers = appState.members.filter(m => m.role === 'beg' && m.coach === 'A');
+      const coachBMembers = appState.members.filter(m => m.role === 'beg' && m.coach !== 'A');
+      document.getElementById('coachACount').textContent = `${coachAMembers.length} 人`;
+      document.getElementById('coachBCount').textContent = `${coachBMembers.length} 人`;
+
+      const renderCoachChip = (m) => `
+        <button type="button" data-toggle-coach="${m.id}" class="coach-member-chip px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 hover:bg-emerald-200 text-emerald-950 flex items-center gap-1 transition" title="點擊切換教練班別">
+          <span>🏂 ${m.name}</span>
+          <span class="text-[10px] text-emerald-700">⇄</span>
+        </button>
+      `;
+
+      coachAList.innerHTML = coachAMembers.map(renderCoachChip).join('');
+      coachBList.innerHTML = coachBMembers.map(renderCoachChip).join('');
+
+      document.querySelectorAll('.coach-member-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const id = chip.getAttribute('data-toggle-coach');
+          const member = appState.members.find(m => m.id === id);
+          if (member) {
+            member.coach = member.coach === 'A' ? 'B' : 'A';
+            saveState();
+            renderCarAndCoachAssigner();
+          }
+        });
+      });
+    }
+
+    // ==================== RENDER: TAB 4 (ROOM ASSIGNER) ====================
+    function renderRoomAssigner() {
+      const container = document.getElementById('roomAssignContainer');
+      const roomCodes = ['A', 'B', 'C', 'D'];
+
+      container.innerHTML = ROOM_DEFS.map(room => {
+        const assigned = appState.members.filter(m => m.room === room.code);
+        const chips = assigned.map(m => `
+          <button type="button" data-cycle-room="${m.id}" class="room-member-chip w-full text-left px-3 py-1.5 rounded-xl text-xs font-bold bg-white border border-slate-200 hover:border-sky-400 shadow-sm flex items-center justify-between transition" title="點擊切換至下一間房">
+            <span>${m.role === 'pro' ? '🔥' : '🌱'} ${m.name}</span>
+            <span class="text-[10px] text-slate-400">換房 ➔</span>
+          </button>
+        `).join('');
+
+        return `
+          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-3.5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-extrabold text-slate-900 text-xs sm:text-sm">${room.name}</span>
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-800">${assigned.length} 人</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mb-3">${room.desc}</p>
+              <div class="space-y-1.5">${chips || '<div class="text-xs text-slate-400 italic py-2">尚無分配團員</div>'}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.room-member-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-cycle-room');
+          const member = appState.members.find(m => m.id === id);
+          if (member) {
+            const idx = roomCodes.indexOf(member.room);
+            member.room = roomCodes[(idx + 1) % roomCodes.length];
+            saveState();
+            renderRoomAssigner();
+          }
+        });
+      });
+    }
+
+    // ==================== RENDER: TAB 5 (DINING & POI) ====================
+    function renderPoiCards() {
+      const grid = document.getElementById('poiCardsGrid');
+      const filtered = POI_DATA.filter(item => {
+        if (appState.poiCat !== 'all' && item.cat !== appState.poiCat) return false;
+        if (appState.groupOnly && !item.groupFriendly) return false;
+        return true;
+      });
+
+      grid.innerHTML = filtered.map(item => {
+        let catLabel = '🥩 餐廳美食';
+        let catStyle = 'bg-rose-100 text-rose-800';
+        if (item.cat === 'market') { catLabel = '🛒 超市採買'; catStyle = 'bg-emerald-100 text-emerald-800'; }
+        if (item.cat === 'onsen') { catLabel = '♨️ 溫泉與景觀'; catStyle = 'bg-sky-100 text-sky-800'; }
+        if (item.cat === 'tour') { catLabel = '🐒 周邊景點'; catStyle = 'bg-amber-100 text-amber-900'; }
+
+        return `
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col justify-between hover:border-sky-300 transition">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-bold ${catStyle}">${catLabel}</span>
+                ${item.groupFriendly ? '<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700">👥 適合11人</span>' : '<span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-500">適合6人小團</span>'}
+              </div>
+              <h4 class="font-extrabold text-slate-900 text-base">${item.name}</h4>
+              <div class="text-xs font-semibold text-sky-700 mt-0.5">📍 ${item.area}</div>
+              <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">${item.desc}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-slate-500">${item.tag}</span>
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-sky-600 hover:text-sky-800">官方／介紹頁 ↗</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==================== RENDER: TAB 6 (CHECKLIST & BUDGET) ====================
+    function renderGearChecklist() {
+      const container = document.getElementById('gearChecklistContainer');
+      const doneCount = GEAR_CHECKLIST.filter(g => !!appState.checkedGear[g.id]).length;
+      const pct = Math.round((doneCount / GEAR_CHECKLIST.length) * 100);
+
+      document.getElementById('gearProgressBar').style.width = `${pct}%`;
+      document.getElementById('gearProgressText').textContent = `已完成 ${doneCount} / ${GEAR_CHECKLIST.length} 項 (${pct}%)`;
+
+      container.innerHTML = GEAR_CHECKLIST.map(g => {
+        const checked = !!appState.checkedGear[g.id];
+        return `
+          <label class="flex items-start gap-3 p-2.5 rounded-xl border ${checked ? 'bg-emerald-50/60 border-emerald-200 text-slate-500 line-through' : 'bg-slate-50/70 border-slate-200 text-slate-800'} cursor-pointer hover:bg-slate-100 transition select-none text-xs sm:text-sm">
+            <input type="checkbox" data-gear-id="${g.id}" ${checked ? 'checked' : ''} class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500" />
+            <span class="flex-1 font-medium">${g.text}</span>
+          </label>
+        `;
+      }).join('');
+
+      container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const id = cb.getAttribute('data-gear-id');
+          appState.checkedGear[id] = cb.checked;
+          saveState();
+          renderGearChecklist();
+        });
+      });
+    }
+
+    function renderBudgetCalculator() {
+      const fx = parseFloat(document.getElementById('fxRateInput').value) || 0.22;
+      const carTotalJpy = parseFloat(document.getElementById('carTotalJpyInput').value) || 190000;
+      const sierraTotalJpy = parseFloat(document.getElementById('sierraTotalJpyInput').value) || 440000;
+      const coachPerPersonTwd = parseFloat(document.getElementById('coachTotalTwdInput').value) || 9500;
+
+      // Per person calculations
+      const shinkansenJpy = 17500; // Round trip Tokyo <-> Iiyama/Myoko approx
+      const sierraPerPersonJpy = Math.round(sierraTotalJpy / 11);
+      const carPerPersonJpy = Math.round(carTotalJpy / 11);
+
+      // Pro (6 people): +2 nights Tokyo (24000 JPY), +2 nights Pension Do (18000 JPY), 7 days lift tickets (48000 JPY)
+      const proLodgingExtraJpy = 42000;
+      const proLiftJpy = 48000;
+      const proTotalJpy = shinkansenJpy + sierraPerPersonJpy + carPerPersonJpy + proLodgingExtraJpy + proLiftJpy;
+      const proTotalTwd = Math.round(proTotalJpy * fx);
+
+      // Beginner (5 people): +1–2 nights Tokyo (20000 JPY), 5 days lift tickets (34000 JPY), 5 days snowboard + helmet rental (22000 JPY) + Coach in TWD
+      const begLodgingExtraJpy = 20000;
+      const begLiftJpy = 34000;
+      const begRentalJpy = 22000;
+      const begBaseJpy = shinkansenJpy + sierraPerPersonJpy + carPerPersonJpy + begLodgingExtraJpy + begLiftJpy + begRentalJpy;
+      const begTotalTwd = Math.round(begBaseJpy * fx) + coachPerPersonTwd;
+
+      const out = document.getElementById('budgetOutputCards');
+      out.innerHTML = `
+        <div class="rounded-2xl bg-sky-50 border border-sky-200 p-4">
+          <div class="text-xs font-extrabold text-sky-900">🔥 先鋒會滑組（6人・滑7天住9晚）</div>
+          <div class="text-2xl font-extrabold text-slate-900 mt-1">約 NT$ ${proTotalTwd.toLocaleString()} <span class="text-xs font-normal text-slate-500">/ 人</span></div>
+          <ul class="text-xs text-slate-600 mt-2.5 space-y-1">
+            <li>• Sierra包棟5晚分攤：¥${sierraPerPersonJpy.toLocaleString()}</li>
+            <li>• 雙四驅租車油資分攤：¥${carPerPersonJpy.toLocaleString()}</li>
+            <li>• Do公寓2晚＋東京2晚：約 ¥${proLodgingExtraJpy.toLocaleString()}</li>
+            <li>• 新幹線來回＋7日雪票：約 ¥${(shinkansenJpy + proLiftJpy).toLocaleString()}</li>
+          </ul>
+        </div>
+
+        <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4">
+          <div class="text-xs font-extrabold text-emerald-900">🌱 單板新手組（5人・滑5天含教練雪具）</div>
+          <div class="text-2xl font-extrabold text-slate-900 mt-1">約 NT$ ${begTotalTwd.toLocaleString()} <span class="text-xs font-normal text-slate-500">/ 人</span></div>
+          <ul class="text-xs text-slate-600 mt-2.5 space-y-1">
+            <li>• Sierra包棟5晚＋租車分攤：¥${(sierraPerPersonJpy + carPerPersonJpy).toLocaleString()}</li>
+            <li>• 5日雪票＋5日單板安全帽租借：約 ¥${(begLiftJpy + begRentalJpy).toLocaleString()}</li>
+            <li>• 新幹線來回＋東京住宿：約 ¥${(shinkansenJpy + begLodgingExtraJpy).toLocaleString()}</li>
+            <li>• 2天中文單板教練課分攤：約 NT$ ${coachPerPersonTwd.toLocaleString()}</li>
+          </ul>
+        </div>
+      `;
+    }
+
+    // ==================== MEMBER MODAL ====================
+    function openMemberModal() {
+      const modal = document.getElementById('memberModal');
+      const container = document.getElementById('memberEditInputs');
+      container.innerHTML = appState.members.map((m, idx) => `
+        <div class="flex items-center gap-2.5">
+          <span class="w-20 shrink-0 px-2 py-1 rounded text-xs font-bold text-center ${m.role === 'pro' ? 'bg-sky-100 text-sky-900' : 'bg-emerald-100 text-emerald-900'}">
+            ${m.role === 'pro' ? `老手 #${idx + 1}` : `新手 #${idx - 5}`}
+          </span>
+          <input type="text" data-member-input="${m.id}" value="${m.name}" class="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+      `).join('');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeMemberModal() {
+      const modal = document.getElementById('memberModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // ==================== INITIALIZATION & LISTENERS ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      renderQuickJumpBar();
+      renderItineraryCards();
+      renderResortsTab();
+      renderCarAndCoachAssigner();
+      renderRoomAssigner();
+      renderPoiCards();
+      renderGearChecklist();
+      renderBudgetCalculator();
+
+      // Main Tab Navigation
+      document.querySelectorAll('.main-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetTab = btn.getAttribute('data-tab');
+          appState.activeTab = targetTab;
+
+          document.querySelectorAll('.main-tab-btn').forEach(b => {
+            if (b.getAttribute('data-tab') === targetTab) {
+              b.className = 'main-tab-btn tab-btn-active whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5';
+            } else {
+              b.className = 'main-tab-btn text-slate-600 hover:bg-slate-100 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5';
+            }
+          });
+
+          document.querySelectorAll('.tab-panel').forEach(panel => {
+            panel.classList.toggle('hidden', panel.id !== `tab-${targetTab}`);
+          });
+        });
+      });
+
+      // Role Filter Buttons
+      document.querySelectorAll('.role-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.roleFilter = btn.getAttribute('data-role');
+          document.querySelectorAll('.role-filter-btn').forEach(b => {
+            if (b.getAttribute('data-role') === appState.roleFilter) {
+              b.className = 'role-filter-btn role-btn-active px-3 py-1.5 rounded-lg text-xs font-bold transition';
+            } else {
+              b.className = 'role-filter-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition';
+            }
+          });
+          renderItineraryCards();
+        });
+      });
+
+      // Phase Filter Buttons
+      document.querySelectorAll('.phase-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.phaseFilter = btn.getAttribute('data-phase');
+          updatePhaseFilterButtons();
+          renderItineraryCards();
+        });
+      });
+
+      // Expand / Collapse All
+      document.getElementById('expandAllDaysBtn').addEventListener('click', () => {
+        ITINERARY_DATA.forEach(i => { appState.expandedDays[i.day] = true; });
+        renderItineraryCards();
+      });
+      document.getElementById('collapseAllDaysBtn').addEventListener('click', () => {
+        ITINERARY_DATA.forEach(i => { appState.expandedDays[i.day] = false; });
+        renderItineraryCards();
+      });
+
+      // Plan Highlight Buttons
+      document.querySelectorAll('.plan-hl-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.highlightedPlan = btn.getAttribute('data-plan');
+          document.querySelectorAll('.plan-hl-btn').forEach(b => {
+            if (b.getAttribute('data-plan') === appState.highlightedPlan) {
+              b.className = 'plan-hl-btn bg-sky-600 text-white px-3 py-1 rounded-lg text-xs font-bold';
+            } else {
+              b.className = 'plan-hl-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1 rounded-lg text-xs font-bold';
+            }
+          });
+          renderResortsTab();
+        });
+      });
+
+      // POI Category & Group Filter
+      document.querySelectorAll('.poi-cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.poiCat = btn.getAttribute('data-cat');
+          document.querySelectorAll('.poi-cat-btn').forEach(b => {
+            if (b.getAttribute('data-cat') === appState.poiCat) {
+              b.className = 'poi-cat-btn bg-sky-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition';
+            } else {
+              b.className = 'poi-cat-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition';
+            }
+          });
+          renderPoiCards();
+        });
+      });
+
+      document.getElementById('groupFriendlyToggle').addEventListener('change', (e) => {
+        appState.groupOnly = e.target.checked;
+        renderPoiCards();
+      });
+
+      // Checklist Reset & Budget Inputs
+      document.getElementById('resetChecklistBtn').addEventListener('click', () => {
+        appState.checkedGear = {};
+        saveState();
+        renderGearChecklist();
+        showToast('已重置個人裝備檢查表');
+      });
+
+      ['fxRateInput', 'carTotalJpyInput', 'sierraTotalJpyInput', 'coachTotalTwdInput'].forEach(id => {
+        document.getElementById(id).addEventListener('input', renderBudgetCalculator);
+      });
+
+      // Member Modal Controls
+      document.getElementById('openMemberModalBtn').addEventListener('click', openMemberModal);
+      document.getElementById('closeMemberModalBtn').addEventListener('click', closeMemberModal);
+      document.getElementById('cancelMemberModalBtn').addEventListener('click', closeMemberModal);
+
+      document.getElementById('saveMembersBtn').addEventListener('click', () => {
+        document.querySelectorAll('[data-member-input]').forEach(inp => {
+          const id = inp.getAttribute('data-member-input');
+          const m = appState.members.find(x => x.id === id);
+          if (m && inp.value.trim()) m.name = inp.value.trim();
+        });
+        saveState();
+        renderCarAndCoachAssigner();
+        renderRoomAssigner();
+        closeMemberModal();
+        showToast('✅ 已更新 11 位團員名單並同步至全站！');
+      });
+
+      document.getElementById('resetMembersBtn').addEventListener('click', () => {
+        appState.members = JSON.parse(JSON.stringify(DEFAULT_MEMBERS));
+        saveState();
+        openMemberModal();
+        renderCarAndCoachAssigner();
+        renderRoomAssigner();
+        showToast('已恢復預設團員名稱');
+      });
+
+      // Copy Buttons
+      document.getElementById('copyShareAnnouncementBtn').addEventListener('click', () => {
+        const text = [
+          '🏂【2027 妙高全單板自駕滑雪團・11人定案公告】',
+          '📅 日期：2027/01/14 (四) – 01/23 (六) 共 10 天 9 夜',
+          '👥 成員：11 人全單板（先鋒會滑組 6 人 ＋ Day 4 初學者組 5 人）',
+          '🏔️ 方案 A 雪場：赤倉觀光、妙高杉之原(8.5km)、赤倉溫泉(含夜滑)、池之平 Alpen Blick',
+          '🚐 交通：飯山站租 2 台 4WD 八人座雪胎廂型車（含車頂雪板架）',
+          '🏡 住宿：D1 上野 ➔ D2-D3 Do膳食公寓 ➔ D4-D8 Sierra Lodge Myōkō 包棟 5 晚 ➔ D9 東京',
+          '🎯 請大家打開互動網頁確認每日行程、分車、教練分班與個人防摔護具清單！'
+        ].join('\n');
+        copyTextToClipboard(text, '📋 已複製群組公告文字！可直接貼上 LINE');
+      });
+
+      document.getElementById('copyCarCoachBtn').addEventListener('click', () => {
+        const c1 = appState.members.filter(m => m.car === 1).map(m => m.name).join('、');
+        const c2 = appState.members.filter(m => m.car === 2).map(m => m.name).join('、');
+        const ca = appState.members.filter(m => m.role === 'beg' && m.coach === 'A').map(m => m.name).join('、');
+        const cb = appState.members.filter(m => m.role === 'beg' && m.coach !== 'A').map(m => m.name).join('、');
+        const text = `🚐【妙高11人分車＆單板教練分班表】\n🚙 1號車 (Alpha)：${c1}\n🚐 2號車 (Bravo)：${c2}\n🟢 單板教練 A 班：${ca}\n🔵 單板教練 B 班：${cb}`;
+        copyTextToClipboard(text, '📋 已複製分車＆教練分班名單！');
+      });
+
+      document.getElementById('copyRoomingBtn').addEventListener('click', () => {
+        const lines = ROOM_DEFS.map(r => {
+          const names = appState.members.filter(m => m.room === r.code).map(m => m.name).join('、');
+          return `🛏️ ${r.name}：${names || '未分配'}`;
+        });
+        copyTextToClipboard(`🏡【Sierra Lodge Myōkō 11人包棟分房表】\n${lines.join('\n')}`, '📋 已複製包棟分房表！');
+      });
+
+      document.getElementById('copyBudgetSummaryBtn').addEventListener('click', () => {
+        const outText = document.getElementById('budgetOutputCards').innerText.replace(/\n+/g, '\n');
+        copyTextToClipboard(`💰【2027 妙高11人雙軌預算試算】\n${outText}`, '📋 已複製預算試算結果！');
+      });
+    });
+  </script>
+</body>
+</html>
